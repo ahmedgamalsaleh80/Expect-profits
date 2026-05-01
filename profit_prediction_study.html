@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ملف المذاكرة - Profit Prediction System</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #0e7c86;
+    --accent2: #f0a500;
+    --light-bg: #f4f7fb;
+    --card-bg: #ffffff;
+    --text: #1e2d3d;
+    --text-light: #5a6a7a;
+    --border: #dce6f0;
+    --success: #1a7f5a;
+    --warning: #d97706;
+    --danger: #c0392b;
+    --tag-bg: #e8f4f8;
+    --shadow: 0 2px 16px rgba(30,45,61,0.08);
+    --shadow-hover: 0 6px 28px rgba(30,45,61,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', Arial, sans-serif;
+    background: var(--light-bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* ===== HEADER ===== */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #0e3460 60%, var(--accent) 100%);
+    color: white;
+    padding: 50px 30px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 30px;
+    padding: 6px 20px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-size: 2.1rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .hero h2 {
+    font-size: 1.15rem;
+    font-weight: 400;
+    opacity: 0.85;
+    margin-bottom: 20px;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .hero-meta span {
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  /* ===== TOC ===== */
+  .toc-wrapper {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .toc {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 28px 32px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .toc h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+  }
+  .toc a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--tag-bg);
+    transition: all 0.2s;
+  }
+  .toc a:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ===== SECTION ===== */
+  .section {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .section:hover { box-shadow: var(--shadow-hover); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .icon-blue  { background: #dbeafe; }
+  .icon-teal  { background: #ccfbf1; }
+  .icon-orange{ background: #ffedd5; }
+  .icon-purple{ background: #ede9fe; }
+  .icon-green { background: #dcfce7; }
+  .icon-red   { background: #fee2e2; }
+  .icon-yellow{ background: #fef9c3; }
+  .icon-pink  { background: #fce7f3; }
+
+  .section-title-block h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .section-title-block .subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  /* ===== CONTENT ELEMENTS ===== */
+  p { margin-bottom: 14px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  .highlight-box {
+    background: linear-gradient(135deg, #e8f4f8, #d0eaf7);
+    border-right: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .highlight-box.orange {
+    background: linear-gradient(135deg, #fff8e6, #ffecc8);
+    border-color: var(--accent2);
+    color: #7a4500;
+  }
+  .highlight-box.green {
+    background: linear-gradient(135deg, #e8f8f0, #c8f0dc);
+    border-color: var(--success);
+    color: #0a4a2a;
+  }
+  .highlight-box.red {
+    background: linear-gradient(135deg, #fef0ef, #fdd5d2);
+    border-color: var(--danger);
+    color: #7a1a10;
+  }
+
+  /* Feature cards */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .feature-card {
+    background: var(--light-bg);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .feature-card .feat-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .feature-card p { font-size: 14px; margin: 0; }
+
+  /* Model cards */
+  .model-section {
+    background: var(--light-bg);
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+  }
+  .model-section h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .model-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-reg { background: #dbeafe; color: #1e40af; }
+  .tag-cls { background: #dcfce7; color: #166534; }
+  .tag-clu { background: #ede9fe; color: #5b21b6; }
+  .tag-ano { background: #fee2e2; color: #991b1b; }
+
+  /* Steps */
+  .steps { margin: 14px 0; }
+  .step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 30px; height: 30px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content { font-size: 15px; }
+  .step-content strong { color: var(--primary); }
+
+  /* Formula box */
+  .formula {
+    background: #1e2d3d;
+    color: #7dd3fc;
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    margin: 14px 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    direction: ltr;
+  }
+
+  /* Q&A */
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .qa-question {
+    background: var(--primary);
+    color: white;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .qa-question:hover { background: var(--accent); }
+  .qa-q-icon {
+    background: rgba(255,255,255,0.2);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    font-weight: 900;
+  }
+  .qa-answer {
+    padding: 16px 20px;
+    background: #f8fbfd;
+    font-size: 15px;
+    border-top: 2px solid var(--accent);
+    display: none;
+  }
+  .qa-answer.open { display: block; }
+  .qa-answer .answer-label {
+    font-weight: 700;
+    color: var(--success);
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  /* Comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .compare-table th {
+    background: var(--primary);
+    color: white;
+    padding: 12px 14px;
+    font-weight: 700;
+    text-align: right;
+  }
+  .compare-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+  }
+  .compare-table tr:nth-child(even) td { background: var(--light-bg); }
+  .compare-table tr:hover td { background: #e8f4f8; }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 2px;
+  }
+  .tag-blue { background: #dbeafe; color: #1e40af; }
+  .tag-green { background: #dcfce7; color: #166534; }
+
+  /* Summary cards */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .summary-card {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+  .summary-card .s-icon { font-size: 28px; margin-bottom: 8px; }
+  .summary-card .s-title { font-size: 13px; opacity: 0.85; margin-bottom: 4px; }
+  .summary-card .s-value { font-size: 1.1rem; font-weight: 800; }
+
+  /* Tips */
+  .tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    font-size: 14px;
+  }
+  .tip-icon { font-size: 18px; flex-shrink: 0; }
+
+  /* Divider */
+  .divider { height: 2px; background: linear-gradient(to left, transparent, var(--border), transparent); margin: 20px 0; }
+
+  /* Footer */
+  footer {
+    background: var(--primary);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  footer strong { color: white; }
+
+  /* Print */
+  @media print {
+    .section { break-inside: avoid; }
+    .hero { background: var(--primary) !important; }
+    .qa-answer { display: block !important; }
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .section { padding: 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .hero-meta { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-badge">📚 ملف المذاكرة قبل المناقشة</div>
+  <h1>🤖 Profit Prediction System</h1>
+  <h2>From Scratch ML Models — شرح كامل بالعامية المصرية</h2>
+  <div class="hero-meta">
+    <span>👤 Ahmed Gamal Farag Saleh</span>
+    <span>📧 ahmedgamalsaleh80@gmail.com</span>
+    <span>📅 Machine Learning Project</span>
+  </div>
+</div>
+
+<!-- ===== TOC ===== -->
+<div class="toc-wrapper">
+  <div class="toc">
+    <h3>📋 محتويات الملف</h3>
+    <div class="toc-grid">
+      <a href="#intro">1️⃣ مقدمة عن المشروع</a>
+      <a href="#data">2️⃣ شرح الداتا</a>
+      <a href="#preprocessing">3️⃣ Data Preprocessing</a>
+      <a href="#models">4️⃣ الموديلات (مهم جداً)</a>
+      <a href="#why-models">5️⃣ ليه كل موديل؟</a>
+      <a href="#dashboard">6️⃣ الـ Dashboard</a>
+      <a href="#qa">7️⃣ أسئلة المناقشة 🔥</a>
+      <a href="#answers">8️⃣ إجابات جاهزة</a>
+      <a href="#summary">9️⃣ الخلاصة</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== 1. INTRO ===== -->
+  <div class="section" id="intro">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🎯</div>
+      <div class="section-title-block">
+        <h2>1. مقدمة عن المشروع</h2>
+        <div class="subtitle">المشروع بيعمل إيه؟ وليه اخترته؟</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      🔑 <strong>الفكرة الأساسية:</strong> المشروع ده بيساعد الشركات تعرف هتكسب ولا هتخسر — من غير ما تحتاج موديلات جاهزة زي Scikit-learn!
+    </div>
+
+    <h3 style="color:var(--primary);margin:18px 0 10px;font-size:1rem;">🏢 المشروع بيعمل إيه؟</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content"><strong>بياخد بيانات مالية</strong> زي الإيرادات، المصاريف، تكاليف التسويق، وعدد العملاء.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content"><strong>بيتنبأ بالربح</strong> — يعني بيقول هيكون كام بالأرقام (Regression).</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content"><strong>بيصنف</strong> هل النتيجة Profit ولا Loss (Classification).</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content"><strong>بيقسم الشركات</strong> لمجموعات: أداء عالي، متوسط، ضعيف (Clustering).</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content"><strong>بيكشف الشذوذات</strong> — الحالات الغريبة أو المشبوهة في الداتا (Anomaly Detection).</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:var(--primary);margin:0 0 10px;font-size:1rem;">🤔 ليه اخترت المشروع ده؟</h3>
+    <p>لأن <strong>التنبؤ بالأرباح</strong> مشكلة حقيقية بتواجه كل شركة. أي بيزنس محتاج يعرف هو هيكسب ولا هيخسر عشان يخطط صح. وفضلاً عن كده، المشروع ده بيجمع أكتر من نوع موديل في مكان واحد، يعني بيغطي معظم تقنيات ML الأساسية.</p>
+
+    <div class="highlight-box green">
+      💡 <strong>النقطة المهمة اللي لازم تقولها:</strong> أنا مش بس بستخدم الموديلات — أنا بنيتها <u>من الصفر</u> بدون Scikit-learn، عشان أفهم الـ Mathematics وراء كل حاجة.
+    </div>
+
+    <h3 style="color:var(--primary);margin:18px 0 10px;font-size:1rem;">🔧 بيحل مشكلة إيه؟</h3>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-label">❓ المشكلة</div>
+        <p>الشركات مش عارفة هتربح ولا هتخسر قبل ما تاخد القرار</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">✅ الحل</div>
+        <p>موديل بيتنبأ بالربح ويصنف النتيجة ويكشف الحالات الشاذة</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">🎁 القيمة</div>
+        <p>قرارات أذكى + توفير في المصاريف + اكتشاف مبكر للمشاكل</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2. DATA ===== -->
+  <div class="section" id="data">
+    <div class="section-header">
+      <div class="section-icon icon-teal">📊</div>
+      <div class="section-title-block">
+        <h2>2. شرح الداتا</h2>
+        <div class="subtitle">الداتا فيها إيه؟ وكل feature معناه إيه؟</div>
+      </div>
+    </div>
+
+    <p>الداتا عبارة عن <strong>بيانات مالية</strong> لشركات أو فترات زمنية مختلفة. كل صف بيمثل حالة واحدة (شركة أو شهر معين).</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-label">💰 Revenue (الإيرادات)</div>
+        <p>ده إجمالي الفلوس اللي الشركة كسبتها من بيع منتجاتها أو خدماتها. يعني المبيعات الخام قبل أي خصم.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">💸 Expenses (المصاريف)</div>
+        <p>كل الفلوس اللي الشركة صرفتها — إيجار، رواتب، فواتير، وغيره. كل ما زادت عن الإيراد — خسرانين!</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">📣 Marketing Cost (تكلفة التسويق)</div>
+        <p>المبلغ اللي اتصرف على الإعلانات والتسويق. ممكن تتحسب جزء من المصاريف لكن هنا بنتعامل معاها كـ feature منفصل.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">👥 Num Customers (عدد العملاء)</div>
+        <p>عدد العملاء اللي اشتروا أو تعاملوا مع الشركة. Feature مهم جداً لأن أكتر عملاء = أكتر إيراد في الغالب.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">📈 Previous Profit (الربح السابق)</div>
+        <p>ربح الفترة اللي فاتت. مهم جداً لأن الأداء السابق بيأثر على المستقبل — ده context للموديل.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:var(--primary);margin:0 0 14px;font-size:1rem;">🎯 Target Variables (اللي بنتنبأ بيهم)</h3>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;">
+      <div class="highlight-box" style="margin:0;">
+        <strong>📊 Profit (الربح)</strong><br>
+        <span style="font-size:14px;font-weight:400;">ده رقم — مثلاً 50,000 جنيه. بنستخدمه مع Linear Regression عشان نتنبأ بالقيمة الفعلية.</span><br><br>
+        <span style="font-size:13px;color:var(--accent);">الحساب: Revenue − Expenses − Marketing Cost</span>
+      </div>
+      <div class="highlight-box orange" style="margin:0;">
+        <strong>🏷️ Loss Label (التصنيف)</strong><br>
+        <span style="font-size:14px;font-weight:400;">ده تصنيف — إما <strong>Profit (+1)</strong> أو <strong>Loss (−1)</strong>. بنستخدمه مع SVM عشان نصنف الحالة.</span><br><br>
+        <span style="font-size:13px;color:var(--warning);">+1 = كاسبين ✅ | −1 = خاسرين ❌</span>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:16px;">
+      <div class="tip-icon">💡</div>
+      <div>لو الدكتور سألك ليه عندنا target اتنين — قوله: لأن في مشكلتين مختلفتين. الأولى: عايزين نعرف <u>القيمة بالأرقام</u> (Regression). التانية: عايزين نعرف <u>النوع</u> فقط (Classification).</div>
+    </div>
+  </div>
+
+  <!-- ===== 3. PREPROCESSING ===== -->
+  <div class="section" id="preprocessing">
+    <div class="section-header">
+      <div class="section-icon icon-orange">⚙️</div>
+      <div class="section-title-block">
+        <h2>3. Data Preprocessing</h2>
+        <div class="subtitle">عملنا إيه قبل التدريب؟</div>
+      </div>
+    </div>
+
+    <h3 style="color:var(--primary);margin:0 0 14px;font-size:1rem;">🧹 خطوات الـ Preprocessing:</h3>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>تحميل الداتا وفحصها</strong><br>
+          اتأكدنا إن فيش قيم ناقصة (Missing Values) أو بيانات غلط. لو فيش قيم ناقصة — بنحلها بالـ Mean أو بنحذف الصف.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Feature Selection (اختيار الـ Features)</strong><br>
+          اخترنا الـ features المهمة: Revenue, Expenses, Marketing Cost, Num Customers, Previous Profit.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Normalization (التطبيع)</strong> — مهم جداً!<br>
+          حولنا كل القيم تكون بين 0 و 1 باستخدام Min-Max Scaling.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Train/Test Split (تقسيم الداتا)</strong><br>
+          قسمنا الداتا: 80% للتدريب + 20% للاختبار.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>Label Conversion (لـ SVM فقط)</strong><br>
+          حولنا الـ labels من (Profit / Loss) لـ (+1 / −1) عشان SVM بيشتغل بيهم.
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <h3 style="color:var(--primary);margin:0 0 12px;font-size:1rem;">📐 ليه Normalization؟</h3>
+        <p>تخيل عندك Revenue = 1,000,000 و Num Customers = 50. الموديل هيفكر إن الرقم الكبير <strong>أهم</strong> — وده غلط!</p>
+        <div class="formula">X_norm = (X − X_min) / (X_max − X_min)</div>
+        <p>بعد التطبيع: كلهم بين 0 و 1 — والموديل بيتعامل معاهم بشكل عادل.</p>
+      </div>
+      <div>
+        <h3 style="color:var(--primary);margin:0 0 12px;font-size:1rem;">✂️ ليه Train/Test Split؟</h3>
+        <p>لو دربنا الموديل على كل الداتا وبعدين اختبرناه عليها — هيطلع نتيجة كويسة جداً بس في الحقيقة <strong>حافظ الداتا مش فاهمها!</strong></p>
+        <div class="highlight-box orange">
+          80% Train = الموديل بيتعلم منهم<br>
+          20% Test = بنشوف هيعمل إيه على داتا جديدة
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4. MODELS ===== -->
+  <div class="section" id="models">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🤖</div>
+      <div class="section-title-block">
+        <h2>4. شرح الموديلات (مهم جداً 🔥)</h2>
+        <div class="subtitle">كل موديل بيعمل إيه بالظبط؟</div>
+      </div>
+    </div>
+
+    <!-- LINEAR REGRESSION -->
+    <div class="model-section">
+      <h3>📈 Linear Regression <span class="model-tag tag-reg">Regression</span></h3>
+      <p><strong>بيعمل إيه؟</strong> بيتنبأ بقيمة الربح بالأرقام الفعلية. مش بس يقول "كسبان أو خسران" — بيقول "الربح هيكون 75,000 جنيه مثلاً".</p>
+
+      <div class="highlight-box">
+        🧮 <strong>الفكرة:</strong> بيحاول يرسم خط مستقيم يمر من وسط النقاط بحيث يكون أقرب حاجة للكل.
+      </div>
+
+      <div class="formula">Profit = w1×Revenue + w2×Expenses + w3×Marketing + w4×Customers + w5×PrevProfit + b</div>
+
+      <p><strong>يعني إيه Gradient Descent؟</strong></p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">ابدأ بـ weights عشوائية</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">احسب الـ Error (الفرق بين التنبؤ والقيمة الحقيقية)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">عدّل الـ weights في الاتجاه اللي بيقلل الـ Error</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">كرر لحد ما الـ Error يوصل لأدنى قيمة</div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🏔️</div>
+        <div><strong>تشبيه سهل:</strong> تخيل إنك واقف فوق جبل وعايز تنزل لأدنى نقطة بأسرع طريق — كل خطوة بتاخدها في الاتجاه الأنزل. ده بالظبط إيه اللي بيعمله Gradient Descent!</div>
+      </div>
+
+      <p><strong>ازاي بنقيّم أداءه؟</strong> بنستخدم MSE (Mean Squared Error) — كل ما صغّر، الموديل أحسن.</p>
+      <div class="formula">MSE = (1/n) × Σ(y_actual − y_predicted)²</div>
+    </div>
+
+    <!-- SVM -->
+    <div class="model-section" style="margin-top:16px;">
+      <h3>🔷 Support Vector Machine (SVM) <span class="model-tag tag-cls">Classification</span></h3>
+      <p><strong>بيعمل إيه؟</strong> بيصنف — يقول الحالة دي Profit (+1) ولا Loss (−1).</p>
+
+      <div class="highlight-box">
+        🎯 <strong>الفكرة:</strong> بيرسم خط (أو سطح) يفصل بين الـ Profit وال Loss بأكبر مسافة ممكنة. الخط ده اسمه "Hyperplane".
+      </div>
+
+      <p><strong>يعني إيه Margin؟</strong> هي المسافة بين الـ Hyperplane وأقرب نقطة من كل فئة. SVM بيحاول يعظّم الـ Margin دي عشان يكون أكتر ثقة في التصنيف.</p>
+
+      <p><strong>ليه حولنا Labels لـ +1 و −1؟</strong> لأن رياضيات SVM بتشتغل بيهم. الـ Hinge Loss Function اللي بتحسب الخطأ محتاجة القيم دي بالظبط.</p>
+      <div class="formula">y ∈ {+1, −1} | Loss = max(0, 1 − y × (w·x + b))</div>
+
+      <div class="tip">
+        <div class="tip-icon">🛣️</div>
+        <div><strong>تشبيه سهل:</strong> تخيل إنك بتفصل تفاح وبرتقان على ترابيزة — بترسم خط بينهم. SVM بيحاول يعمل الخط ده بأكبر مسافة عن أقرب تفاحة وأقرب برتقانة!</div>
+      </div>
+    </div>
+
+    <!-- K-MEANS -->
+    <div class="model-section" style="margin-top:16px;">
+      <h3>🔵 K-Means Clustering <span class="model-tag tag-clu">Clustering</span></h3>
+      <p><strong>بيعمل إيه؟</strong> بيقسم الشركات لـ 3 مجموعات: High Performance / Medium / Low Performance — من غير ما يبقى عنده labels مسبقة!</p>
+
+      <div class="highlight-box">
+        🎯 <strong>الفكرة:</strong> بيحدد 3 نقاط مركزية (Centroids) ويحط كل نقطة في الـ Cluster اللي مركزها أقرب ليها.
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content"><strong>اختار 3 نقاط عشوائية</strong> كـ Centroids</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><strong>حدد</strong> كل نقطة تابعة لأي Centroid (الأقرب ليها)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content"><strong>احسب</strong> متوسط كل Cluster وحرّك الـ Centroid للمتوسط</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><strong>كرر</strong> لحد ما الـ Centroids ما تتحركش</div>
+        </div>
+      </div>
+
+      <p><strong>إيه النتيجة؟</strong> 3 مجموعات: Cluster 0 (High) — Cluster 1 (Medium) — Cluster 2 (Low). بنعرف كده مين الشركات الأحسن أداءً.</p>
+
+      <div class="tip">
+        <div class="tip-icon">🧲</div>
+        <div><strong>تشبيه سهل:</strong> تخيل عندك 100 طالب وعايز تعملهم 3 مجموعات دراسة — بتحطهم مع أكتر حد قريب منهم في المستوى. ده بالظبط K-Means!</div>
+      </div>
+    </div>
+
+    <!-- DBSCAN -->
+    <div class="model-section" style="margin-top:16px;">
+      <h3>🔴 DBSCAN <span class="model-tag tag-ano">Anomaly Detection</span></h3>
+      <p><strong>بيعمل إيه؟</strong> بيكشف الحالات الشاذة — الشركات أو البيانات اللي مش شبهة أي حاجة تانية.</p>
+
+      <div class="highlight-box red">
+        ⚠️ <strong>الفكرة:</strong> DBSCAN بيقول: "لو النقطة دي ملهاش جيران قريبين — يبقى ده Noise (شذوذ)!"
+      </div>
+
+      <p><strong>المصطلحات المهمة:</strong></p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feat-label">🎯 Epsilon (ε)</div>
+          <p>المسافة القصوى اللي بنعتبر فيها نقطتين "قريبتين من بعض".</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-label">🔢 MinPts</div>
+          <p>أقل عدد من الجيران عشان النقطة تبقى "Core Point" وليست Noise.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-label">❌ Noise Point</div>
+          <p>نقطة عندها جيران أقل من MinPts — دي الـ Anomaly اللي بنفضح فيها!</p>
+        </div>
+      </div>
+
+      <p style="margin-top:14px;"><strong>ليه بنستخدمه؟</strong> عشان نكشف بيانات غلط في الـ Dataset أو حالات استثنائية تحتاج مراجعة. مثلاً: شركة عندها Revenue عالية جداً بس Profit سلبي — دي حالة مشبوهة!</p>
+
+      <div class="tip">
+        <div class="tip-icon">🏙️</div>
+        <div><strong>تشبيه سهل:</strong> تخيل حي سكني فيه ناس كتير مع بعض — ودي Clusters. لكن لو في واحد ساكن في الصحرا بعيد عن الكل — ده الـ Noise Point!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 5. WHY MODELS ===== -->
+  <div class="section" id="why-models">
+    <div class="section-header">
+      <div class="section-icon icon-green">🧩</div>
+      <div class="section-title-block">
+        <h2>5. ليه عملنا كل موديل؟</h2>
+        <div class="subtitle">الفرق بينهم ودور كل واحد</div>
+      </div>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>الموديل</th>
+          <th>النوع</th>
+          <th>السؤال اللي بيجاوبه</th>
+          <th>دوره في المشروع</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Linear Regression</strong></td>
+          <td><span class="tag tag-blue">Regression</span></td>
+          <td>الربح هيكون <em>كام؟</em></td>
+          <td>تنبؤ بالقيمة الفعلية للربح</td>
+        </tr>
+        <tr>
+          <td><strong>SVM</strong></td>
+          <td><span class="tag tag-green">Classification</span></td>
+          <td>الشركة كاسبة ولا <em>خاسرة؟</em></td>
+          <td>تصنيف الحالة لـ Profit أو Loss</td>
+        </tr>
+        <tr>
+          <td><strong>K-Means</strong></td>
+          <td><span class="tag" style="background:#ede9fe;color:#5b21b6;">Clustering</span></td>
+          <td>الشركة في <em>أي مستوى؟</em></td>
+          <td>تقسيم لـ High / Medium / Low</td>
+        </tr>
+        <tr>
+          <td><strong>DBSCAN</strong></td>
+          <td><span class="tag" style="background:#fee2e2;color:#991b1b;">Anomaly</span></td>
+          <td>في <em>حاجة غريبة؟</em></td>
+          <td>كشف البيانات الشاذة والمشبوهة</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box green" style="margin-top:16px;">
+      💡 <strong>الفكرة الكاملة:</strong> كل موديل بيضيف بعد مختلف. Regression بيدي الأرقام، SVM بيدي التصنيف، K-Means بيدي فهم أعمق للداتا، وDBSCAN بيضمن إن الداتا نظيفة ومش فيها شذوذات.
+    </div>
+
+    <div class="divider"></div>
+    <h3 style="color:var(--primary);margin:0 0 14px;font-size:1rem;">🆚 الفروقات الأساسية</h3>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-label">Regression vs Classification</div>
+        <p>Regression بيتنبأ بـ رقم متواصل. Classification بيتنبأ بـ فئة (كاسب / خاسر).</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">K-Means vs DBSCAN</div>
+        <p>K-Means محتاج تحدد عدد الـ Clusters مسبقاً. DBSCAN بيكتشف الـ Clusters وحده ومش بيحتاج عددهم.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">Supervised vs Unsupervised</div>
+        <p>Linear Regression وSVM = Supervised (عندهم labels). K-Means وDBSCAN = Unsupervised (بدون labels).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 6. DASHBOARD ===== -->
+  <div class="section" id="dashboard">
+    <div class="section-header">
+      <div class="section-icon icon-yellow">🖥️</div>
+      <div class="section-title-block">
+        <h2>6. شرح الـ Dashboard (Streamlit)</h2>
+        <div class="subtitle">المستخدم بيعمل إيه؟ وبيشوف إيه؟</div>
+      </div>
+    </div>
+
+    <p>الـ Dashboard ده <strong>واجهة مستخدم</strong> تم بناؤها بـ Streamlit (مكتبة Python بتبني تطبيقات ويب بسهولة). المستخدم مش محتاج يكتب كود — بيتعامل مع الواجهة بضغطة زرار!</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>رفع ملف CSV</strong> — المستخدم بيرفع ملف البيانات من جهازه بضغطة زرار "Upload File".
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>اختيار الموديل</strong> — بيختار هو عايز ينفذ إيه: Regression / Classification / Clustering / Anomaly Detection.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>تشغيل التحليل</strong> — بيضغط "Run Analysis" والموديل بيشتغل على الداتا.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>مشاهدة النتائج</strong> — بتظهر جداول وروسومات بيانية واضحة: التنبؤات، التصنيف، المجموعات، الشذوذات.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>تحميل النتائج</strong> — ممكن يحمل النتائج كـ CSV.
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      🎨 <strong>ليه Streamlit؟</strong> لأنه سريع، بسيط، ومش محتاج HTML/CSS/JS. بكتب Python وبيطلع تطبيق ويب احترافي. مثالي للـ Data Science Projects.
+    </div>
+  </div>
+
+  <!-- ===== 7. Q&A ===== -->
+  <div class="section" id="qa">
+    <div class="section-header">
+      <div class="section-icon icon-red">🔥</div>
+      <div class="section-title-block">
+        <h2>7. الأسئلة المتوقعة في المناقشة</h2>
+        <div class="subtitle">اضغط على السؤال عشان تشوف الإجابة</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">⚡</div>
+      <div>اضغط على أي سؤال عشان الإجابة تطلع. اذاكر كل الإجابات دي كويس!</div>
+    </div>
+
+    <div style="margin-top:16px;">
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          ليه اخترت المشروع ده؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          لأن التنبؤ بالأرباح مشكلة حقيقية وعملية بتواجه كل شركة. وزيادة على كده، المشروع بيجمع أنواع مختلفة من الـ ML في مكان واحد — Regression، Classification، Clustering، وAnomaly Detection — وده خلاه فرصة ممتازة أتعلم منها أكتر. الأهم إني بنيت كل الموديلات <strong>من الصفر بدون Scikit-learn</strong> عشان أفهم الـ Mathematics الحقيقية.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          إيه الفرق بين Regression وClassification؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          Regression بيتنبأ بـ <strong>قيمة رقمية متواصلة</strong> — زي ما تقول "الربح هيكون 50,000 جنيه". أما Classification فبيتنبأ بـ <strong>فئة</strong> — كاسب ولا خاسر. في مشروعنا: استخدمنا Linear Regression عشان يتنبأ بالقيمة الفعلية للربح، واستخدمنا SVM عشان يصنف هل في profit ولا loss.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          ليه استخدمت SVM وليس Logistic Regression أو Decision Tree؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          SVM كويس في المشاكل اللي فيها البيانات مش كتير أوي وعايزين تصنيف واضح. مميزته الأساسية إنه بيعظّم الـ Margin — يعني بيدي مسافة أمان أكبر بين الفئتين، وده بيخليه أكتر ثباتاً. كمان من ناحية تعليمية، فهم SVM من الصفر أصعب وأعمق من Logistic Regression، وده كان هدفي.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          إيه الفرق بين K-Means وDBSCAN؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          الفرق في <strong>3 نقاط</strong>: أولاً: K-Means محتاج تحدد عدد الـ Clusters (K) من الأول — DBSCAN بيكتشفهم وحده. تانياً: K-Means مش بيكشف Anomalies — DBSCAN بيحدد Noise Points (الشذوذات). تالتاً: K-Means بيفترض إن الـ Clusters دايرية الشكل — DBSCAN يقدر يتعامل مع أشكال أي شكل. في المشروع: استخدمنا K-Means للتجميع العادي، وDBSCAN لكشف البيانات الشاذة.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          يعني إيه Overfitting؟ وإزاي تعرف إن موديلك Overfit؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          Overfitting يعني الموديل "حفظ الداتا" بدل ما "اتعلم منها". زي طالب حفظ الأسئلة بالنص بدل ما فهم المادة — في الامتحان الحقيقي هيفشل! بعرف إن فيه Overfitting لما الـ Training Accuracy بتكون عالية جداً (مثلاً 99%) بس الـ Test Accuracy واطية (مثلاً 70%). الحل: نستخدم <strong>More Data</strong> أو <strong>Regularization</strong> أو <strong>Dropout</strong>.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          إزاي تحسّن الموديل لو الأداء مش كويس؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          في أكتر من طريقة: أولاً: <strong>Feature Engineering</strong> — أضيف Features جديدة أو أعدّل الموجودة. تانياً: <strong>Hyperparameter Tuning</strong> — أجرب قيم مختلفة للـ Learning Rate أو عدد الـ Iterations. تالتاً: <strong>More Data</strong> — أجيب داتا أكتر عشان الموديل يتعلم أحسن. رابعاً: <strong>Regularization</strong> — عشان أمنع الـ Overfitting. خامساً: أجرب موديل تاني ممكن يكون أنسب للمشكلة.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          يعني إيه Gradient Descent وليه بنستخدمه؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          Gradient Descent هو <strong>خوارزمية التحسين</strong> اللي بنستخدمها عشان نعدل الـ Weights. بدلاً من تجربة كل القيم الممكنة (اللي ممكن تاخد وقت لا نهائي)، بنحسب في أي اتجاه يقل الـ Error ونمشي فيه خطوة خطوة. زي ما تكون شايل عينيك وبتحاول تنزل جبل — بتحس بأي اتجاه تنزل فيه وبتمشي.
+          <div class="formula" style="margin-top:12px;">w = w − α × ∂(Loss)/∂w</div>
+          α ده الـ Learning Rate — بيحدد حجم الخطوة.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          ليه عملت Normalization وليس Standardization؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          Normalization (Min-Max) بتحول القيم لـ [0, 1]. Standardization (Z-score) بتحول القيم عشان المتوسط = 0 والانحراف المعياري = 1. اخترت Normalization لأن بياناتنا المالية ليها حدود واضحة (مش فيها outliers شديدة) والنطاق [0, 1] أنسب للموديلات اللي استخدمناها. لو كان فيه Outliers كتير كنت هستخدم Standardization.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          ليه بنيت الموديلات من الصفر ومش استخدمت Scikit-learn؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          عشان الهدف مش بس إن الموديل يشتغل — الهدف إني أفهم <strong>إيه اللي بيحصل جوا الموديل</strong>. لو استخدمت Scikit-learn، هكتب سطرين وخلاص بس مش هفهم ليه. بناء الموديلات من الصفر خلاني أفهم الـ Mathematics (Gradient Descent، Hinge Loss، Euclidean Distance) وده بيفيدني على المدى البعيد كـ ML Engineer.
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-icon">Q</div>
+          إزاي اخترت قيمة K في K-Means؟
+        </div>
+        <div class="qa-answer">
+          <div class="answer-label">✅ الإجابة:</div>
+          استخدمت <strong>Elbow Method</strong>. الفكرة إنك بتجرب قيم مختلفة لـ K وبتحسب الـ Inertia (مجموع المسافات داخل كل Cluster). بترسم الـ Curve وبتشوف لحد فين بتقل بسرعة وبعدين تبطأ — النقطة دي هي الـ "Elbow" وهي أفضل قيمة لـ K. في مشروعنا K=3 منطقي لأن عندنا 3 مستويات أداء واضحة: High / Medium / Low.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== 8. SAMPLE ANSWERS ===== -->
+  <div class="section" id="answers">
+    <div class="section-header">
+      <div class="section-icon icon-pink">💬</div>
+      <div class="section-title-block">
+        <h2>8. إجابات نموذجية جاهزة</h2>
+        <div class="subtitle">ردود تقولها في المناقشة بالظبط</div>
+      </div>
+    </div>
+
+    <div class="highlight-box orange">
+      🎭 <strong>نصيحة مهمة:</strong> ماتقولش الإجابات دي بالنص. قولها بأسلوبك وبنبرة واثق. المهم إن المعلومة تبان منك مش محفوظة.
+    </div>
+
+    <div style="margin-top:16px;">
+      <div style="background:var(--light-bg);border-radius:12px;padding:20px;margin-bottom:14px;border-right:4px solid var(--accent);">
+        <strong style="color:var(--primary);display:block;margin-bottom:8px;">🎤 لما يقولك: "اشرحلي المشروع في جملتين"</strong>
+        <p style="margin:0;font-style:italic;">"المشروع ده بيساعد الشركات تتنبأ بالأرباح وتصنف هل هتكسب ولا هتخسر، وكمان بيكشف الشذوذات في البيانات — وكل ده عملته بموديلات ML بنيتها من الصفر من غير مكتبات جاهزة."</p>
+      </div>
+
+      <div style="background:var(--light-bg);border-radius:12px;padding:20px;margin-bottom:14px;border-right:4px solid var(--accent2);">
+        <strong style="color:var(--primary);display:block;margin-bottom:8px;">🎤 لما يسألك: "ليه Gradient Descent مش بيوصل للـ Zero Error؟"</strong>
+        <p style="margin:0;font-style:italic;">"لأن أحياناً الـ Learning Rate بيبقى كبير فيتعدى الـ Minimum، أو الـ Loss Function فيها Local Minima مش Global Minimum. الحل إننا نجرب Learning Rates مختلفة أو نستخدم Adam Optimizer."</p>
+      </div>
+
+      <div style="background:var(--light-bg);border-radius:12px;padding:20px;margin-bottom:14px;border-right:4px solid var(--success);">
+        <strong style="color:var(--primary);display:block;margin-bottom:8px;">🎤 لما يسألك: "الموديل الأفضل في مشروعك إيه؟"</strong>
+        <p style="margin:0;font-style:italic;">"مفيش موديل أفضل بشكل مطلق — كل واحد بيجاوب على سؤال مختلف. Linear Regression بيدي دقة في التنبؤ بالأرقام، SVM بيدي تصنيف واضح، K-Means بيدي فهم أعمق للشرائح، وDBSCAN بيضمن جودة الداتا. كلهم مهمين."</p>
+      </div>
+
+      <div style="background:var(--light-bg);border-radius:12px;padding:20px;margin-bottom:14px;border-right:4px solid var(--danger);">
+        <strong style="color:var(--primary);display:block;margin-bottom:8px;">🎤 لما يسألك: "لو داتا جديدة جت — إيه اللي هيتغير؟"</strong>
+        <p style="margin:0;font-style:italic;">"الـ Weights والـ Centroids هيتغيروا بعد إعادة التدريب. لكن الـ Architecture والـ Logic هيفضلوا زي ما هم. المهم إننا نعمل Preprocessing للداتا الجديدة بنفس الـ Scaler اللي اتدرب الموديل عليه."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 9. SUMMARY ===== -->
+  <div class="section" id="summary">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🎓</div>
+      <div class="section-title-block">
+        <h2>9. الخلاصة</h2>
+        <div class="subtitle">المشروع بيقدم إيه؟ واتعلمت إيه؟</div>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="s-icon">📈</div>
+        <div class="s-title">Linear Regression</div>
+        <div class="s-value">تنبؤ بالأرقام</div>
+      </div>
+      <div class="summary-card" style="background:linear-gradient(135deg,#166534,#15803d);">
+        <div class="s-icon">🔷</div>
+        <div class="s-title">SVM</div>
+        <div class="s-value">تصنيف الحالات</div>
+      </div>
+      <div class="summary-card" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);">
+        <div class="s-icon">🔵</div>
+        <div class="s-title">K-Means</div>
+        <div class="s-value">تجميع الشركات</div>
+      </div>
+      <div class="summary-card" style="background:linear-gradient(135deg,#991b1b,#dc2626);">
+        <div class="s-icon">🔴</div>
+        <div class="s-title">DBSCAN</div>
+        <div class="s-value">كشف الشذوذات</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:var(--primary);margin:0 0 14px;font-size:1rem;">🎯 إيه اللي قدّمه المشروع؟</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">✅</div>
+        <div class="step-content"><strong>نظام متكامل</strong> يقدر يتنبأ، يصنف، يجمّع، ويكشف الشذوذات في وقت واحد.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">✅</div>
+        <div class="step-content"><strong>Dashboard سهل الاستخدام</strong> يخلي أي حد (حتى لو مش متخصص) يستخدم الموديلات بضغطة زرار.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">✅</div>
+        <div class="step-content"><strong>كود نظيف ومفهوم</strong> مكتوب من الصفر بدون مكتبات سوداء — مع تعليقات شارحة.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="color:var(--primary);margin:0 0 14px;font-size:1rem;">🧠 اتعلمت إيه؟</h3>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-label">📐 الرياضيات</div>
+        <p>Gradient Descent، Hinge Loss، Euclidean Distance، MSE — فهمتهم بالعمق مش بس حفظت الأسماء.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">🧹 Preprocessing</div>
+        <p>إن الداتا لازم تتنضف وتتطبّع قبل أي تدريب — وده خطوة مش اختيارية.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">🔍 Evaluation</div>
+        <p>إزاي تقيّم الموديل: MSE للـ Regression، Accuracy للـ Classification، Silhouette للـ Clustering.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-label">🖥️ Deployment</div>
+        <p>إزاي تحول الكود لتطبيق حقيقي يقدر يستخدمه المستخدم العادي باستخدام Streamlit.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box green" style="margin-top:20px;font-size:15px;">
+      🏆 <strong>الجملة اللي تختم بيها المناقشة:</strong><br><br>
+      <em>"المشروع ده علّمني إن ML مش بس كود — هي طريقة تفكير. أي مشكلة تقدر تقسّمها لأجزاء وتحل كل جزء بالأداة المناسبة. وأهم حاجة اتعلمتها: متبنيش على كود ما فهمتوش."</em>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <strong>Ahmed Gamal Farag Saleh</strong> · ahmedgamalsaleh80@gmail.com<br>
+  <span style="opacity:0.5;font-size:12px;margin-top:6px;display:block;">Profit Prediction System — From Scratch ML Models · ملف المذاكرة</span>
+</footer>
+
+<script>
+  function toggleQA(el) {
+    const answer = el.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.qa-answer').forEach(a => a.classList.remove('open'));
+    // Toggle current
+    if (!isOpen) answer.classList.add('open');
+  }
+</script>
+
+</body>
+</html>

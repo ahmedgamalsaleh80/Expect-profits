@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شرح الكود — Profit Prediction System</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222637;
+    --surface3: #2a2f46;
+    --border: rgba(255,255,255,0.08);
+    --accent: #38bdf8;
+    --accent2: #f59e0b;
+    --accent3: #34d399;
+    --accent4: #f87171;
+    --accent5: #a78bfa;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-faint: #475569;
+    --code-bg: #0d1117;
+    --code-border: rgba(56,189,248,0.15);
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 50px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    display: inline-block;
+    border: 1px solid rgba(56,189,248,0.3);
+    color: var(--accent);
+    border-radius: 999px;
+    padding: 5px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .hero p { color: var(--text-dim); font-size: 1rem; }
+  .hero-chips {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
+    margin-top: 24px;
+  }
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .chip span { color: var(--accent); font-weight: 700; }
+
+  /* ─── NAV ─── */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-inner {
+    max-width: 1000px; margin: 0 auto;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .nav-label { color: var(--text-faint); font-size: 12px; font-weight: 700; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .nav a {
+    padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
+    text-decoration: none; color: var(--text-dim);
+    background: var(--surface2); border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--accent); border-color: rgba(56,189,248,0.4); }
+
+  /* ─── MAIN ─── */
+  .container { max-width: 1000px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ─── FILE SECTION ─── */
+  .file-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .file-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .file-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .py-icon { background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); }
+  .st-icon { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); }
+  .file-title h2 { font-size: 1.15rem; font-weight: 800; color: #fff; }
+  .file-title p { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+  .file-body { padding: 24px; }
+
+  /* ─── FUNCTION BLOCK ─── */
+  .fn-block {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .fn-header {
+    background: var(--surface3);
+    padding: 14px 20px;
+    display: flex; align-items: flex-start; gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .fn-header:hover { background: #31374f; }
+  .fn-badge {
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 5px;
+    text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; margin-top: 2px;
+    font-family: 'Courier New', monospace;
+  }
+  .badge-def { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+  .badge-class { background: rgba(167,139,250,0.15); color: var(--accent5); border: 1px solid rgba(167,139,250,0.3); }
+  .badge-main { background: rgba(52,211,153,0.15); color: var(--accent3); border: 1px solid rgba(52,211,153,0.3); }
+  .badge-ui { background: rgba(245,158,11,0.15); color: var(--accent2); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-config { background: rgba(248,113,113,0.15); color: var(--accent4); border: 1px solid rgba(248,113,113,0.3); }
+
+  .fn-name {
+    flex: 1;
+  }
+  .fn-name .fn-title { font-size: 1rem; font-weight: 700; color: #fff; font-family: 'Courier New', monospace; }
+  .fn-name .fn-sub { font-size: 13px; color: var(--text-dim); margin-top: 3px; font-family: 'Cairo', sans-serif; }
+  .fn-toggle { color: var(--text-faint); font-size: 16px; flex-shrink: 0; margin-top: 2px; transition: transform 0.2s; }
+  .fn-toggle.open { transform: rotate(180deg); }
+
+  .fn-body { display: none; padding: 20px; border-top: 1px solid var(--border); }
+  .fn-body.open { display: block; }
+
+  /* ─── CODE BLOCK ─── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 14px 0;
+    direction: ltr;
+  }
+  .code-top {
+    background: #161b22;
+    padding: 8px 16px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid var(--code-border);
+  }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #f87171; } .dot-y { background: #fbbf24; } .dot-g { background: #34d399; }
+  .code-filename { color: var(--text-faint); font-size: 11px; margin-right: auto; font-family: 'Courier New', monospace; }
+  pre {
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #cdd9e5;
+    direction: ltr;
+    text-align: left;
+  }
+
+  /* Syntax highlight colors */
+  .kw { color: #ff7b72; } /* keywords: def, if, for, return */
+  .fn { color: #d2a8ff; } /* function names */
+  .str { color: #a5d6ff; } /* strings */
+  .num { color: #79c0ff; } /* numbers */
+  .cm { color: #6e7681; font-style: italic; } /* comments */
+  .cls { color: #ffa657; } /* class names */
+  .var { color: #e6edf3; } /* variables */
+  .op { color: #ff7b72; } /* operators */
+  .param { color: #79c0ff; } /* parameters */
+
+  /* ─── EXPLANATION PARTS ─── */
+  .explain-section { margin: 14px 0; }
+  .explain-section h4 { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+  .line-explain {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    margin-bottom: 7px;
+  }
+  .line-num {
+    background: rgba(56,189,248,0.1);
+    color: var(--accent);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    flex-shrink: 0;
+    min-width: 55px;
+    text-align: center;
+    border: 1px solid rgba(56,189,248,0.2);
+  }
+  .line-code-mini {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+    flex-shrink: 0;
+    min-width: 180px;
+    direction: ltr;
+    text-align: left;
+    padding-top: 1px;
+  }
+  .line-meaning { font-size: 14px; color: var(--text-dim); flex: 1; }
+  .line-meaning strong { color: var(--text); }
+
+  /* Info boxes */
+  .info-box {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .info-box .ib-icon { font-size: 18px; flex-shrink: 0; }
+  .info-box .ib-text { font-size: 14px; }
+  .box-blue { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2); }
+  .box-amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
+  .box-green { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); }
+  .box-red { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); }
+  .box-purple { background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.2); }
+
+  /* Math formula */
+  .formula-box {
+    background: #0d1117;
+    border: 1px solid rgba(52,211,153,0.25);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: var(--accent3);
+    text-align: center;
+    margin: 12px 0;
+    direction: ltr;
+  }
+
+  /* Step list */
+  .step-list { margin: 10px 0; }
+  .step-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .step-n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(56,189,248,0.15);
+    border: 1px solid rgba(56,189,248,0.3);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .step-t { font-size: 14px; color: var(--text-dim); padding-top: 2px; }
+  .step-t strong { color: var(--text); }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* Summary table */
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+  .sum-table th { background: var(--surface3); color: var(--accent); padding: 10px 14px; text-align: right; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .sum-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+  .sum-table tr:hover td { background: var(--surface2); color: var(--text); }
+
+  /* Mini tag */
+  .mtag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; font-family: 'Courier New', monospace;
+  }
+  .mt-blue { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .mt-green { background: rgba(52,211,153,0.15); color: var(--accent3); }
+  .mt-amber { background: rgba(245,158,11,0.15); color: var(--accent2); }
+  .mt-red { background: rgba(248,113,113,0.15); color: var(--accent4); }
+
+  /* Section header */
+  .sec-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sec-num {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(56,189,248,0.05));
+    border: 1px solid rgba(56,189,248,0.3);
+    color: var(--accent); font-size: 1.1rem; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sec-title h2 { font-size: 1.2rem; font-weight: 800; color: #fff; }
+  .sec-title p { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Footer */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 13px;
+  }
+  footer strong { color: var(--text-dim); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.5rem; }
+    .line-code-mini { display: none; }
+    .fn-toggle { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="hero-label">📖 Code Walkthrough</div>
+  <h1>شرح الكود بالتفصيل</h1>
+  <p>Profit Prediction System — كل سطر مشروح بالعامية المصرية</p>
+  <div class="hero-chips">
+    <div class="chip">📄 <span>profit_dashboard.py</span> — النسخة الأولى CLI</div>
+    <div class="chip">🌐 <span>app.py</span> — النسخة الثانية Streamlit</div>
+    <div class="chip">🤖 <span>SVM + K-Means</span> من الصفر</div>
+    <div class="chip">👤 <span>Ahmed Gamal Farag Saleh</span></div>
+  </div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-label">انتقل لـ:</span>
+    <a href="#overview">📊 نظرة عامة</a>
+    <a href="#imports">📦 Imports</a>
+    <a href="#detect">🔍 detect_numeric</a>
+    <a href="#prepare">🧹 prepare_data</a>
+    <a href="#normalise">📐 normalise</a>
+    <a href="#svm-train">🤖 svm_train</a>
+    <a href="#svm-predict">🎯 svm_predict</a>
+    <a href="#kmeans">🔵 k_means</a>
+    <a href="#evaluate">📊 evaluate</a>
+    <a href="#plot">🎨 plot_results</a>
+    <a href="#main">⚡ main</a>
+    <a href="#streamlit">🌐 app.py</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ─── OVERVIEW ─── -->
+<div class="file-block" id="overview">
+  <div class="file-header">
+    <div class="file-icon py-icon">🗺️</div>
+    <div class="file-title">
+      <h2>نظرة عامة على هيكل المشروع</h2>
+      <p>الكود فيه ملفين رئيسيين — وكل واحد ليه دوره</p>
+    </div>
+  </div>
+  <div class="file-body">
+    <table class="sum-table">
+      <thead><tr><th>الملف</th><th>الدور</th><th>الموديلات</th><th>الواجهة</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="mtag mt-blue">profit_dashboard.py</span></td>
+          <td>النسخة الأولى — بتشتغل من Command Line</td>
+          <td>SVM + K-Means</td>
+          <td>Terminal + صورة PNG</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-amber">app.py</span></td>
+          <td>النسخة الثانية — واجهة ويب متكاملة</td>
+          <td>SVM + K-Means</td>
+          <td>Streamlit (متصفح)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box box-blue" style="margin-top:16px;">
+      <div class="ib-icon">💡</div>
+      <div class="ib-text">الدوال في الملفين <strong>نفسها بالظبط</strong> — الفرق الوحيد هو الـ Interface. profit_dashboard.py بيشتغل في Terminal وبيحفظ صورة، وapp.py بيعرض كل حاجة في المتصفح بشكل interactive.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h4 style="color:var(--accent);margin-bottom:12px;">🔄 تدفق البرنامج من الأول للآخر</h4>
+    <div class="step-list">
+      <div class="step-item"><div class="step-n">1</div><div class="step-t"><strong>تحميل الداتا</strong> من CSV</div></div>
+      <div class="step-item"><div class="step-n">2</div><div class="step-t"><strong>اكتشاف الأعمدة الرقمية</strong> تلقائياً</div></div>
+      <div class="step-item"><div class="step-n">3</div><div class="step-t"><strong>تنظيف الداتا</strong> وإزالة القيم الفاضية</div></div>
+      <div class="step-item"><div class="step-n">4</div><div class="step-t"><strong>تطبيع الداتا</strong> Z-Score Normalization</div></div>
+      <div class="step-item"><div class="step-n">5</div><div class="step-t"><strong>تقسيم 80/20</strong> Train/Test Split</div></div>
+      <div class="step-item"><div class="step-n">6</div><div class="step-t"><strong>تدريب SVM</strong> لتصنيف Profit أو Loss</div></div>
+      <div class="step-item"><div class="step-n">7</div><div class="step-t"><strong>تدريب K-Means</strong> لتقسيم البيانات لمجموعات</div></div>
+      <div class="step-item"><div class="step-n">8</div><div class="step-t"><strong>تقييم الأداء</strong> Accuracy / Precision / Recall / F1</div></div>
+      <div class="step-item"><div class="step-n">9</div><div class="step-t"><strong>عرض النتائج</strong> في Dashboard</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FILE 1: profit_dashboard.py ─── -->
+<div class="file-block">
+  <div class="file-header">
+    <div class="file-icon py-icon">🐍</div>
+    <div class="file-title">
+      <h2>profit_dashboard.py</h2>
+      <p>النسخة الأولى — Command Line Interface + Matplotlib Dashboard</p>
+    </div>
+  </div>
+  <div class="file-body">
+
+    <!-- IMPORTS -->
+    <div class="fn-block" id="imports">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-config">imports</span>
+        <div class="fn-name">
+          <div class="fn-title">الـ Imports — المكتبات</div>
+          <div class="fn-sub">السطور 1–9: استدعاء المكتبات الخارجية</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 1–9</span>
+          </div>
+          <pre><span class="cm"># ============================================================</span>
+<span class="cm">#  Profit Prediction — SVM + K-Means (from scratch)</span>
+<span class="cm"># ============================================================</span>
+
+<span class="kw">import</span> <span class="cls">pandas</span> <span class="kw">as</span> pd
+<span class="kw">import</span> <span class="cls">numpy</span> <span class="kw">as</span> np
+<span class="kw">import</span> <span class="cls">matplotlib.pyplot</span> <span class="kw">as</span> plt
+<span class="kw">import</span> <span class="cls">matplotlib.gridspec</span> <span class="kw">as</span> gridspec
+<span class="kw">import</span> sys, random</pre>
+        </div>
+        <div class="explain-section">
+          <h4>📝 شرح كل سطر:</h4>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">import pandas as pd</div>
+            <div class="line-meaning"><strong>pandas</strong> = المكتبة اللي بنشتغل بيها مع الـ CSV وجداول البيانات. <code>as pd</code> يعني بدل ما نكتب <code>pandas.read_csv()</code> بنكتب <code>pd.read_csv()</code> — اختصار بس.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 6</div>
+            <div class="line-code-mini">import numpy as np</div>
+            <div class="line-meaning"><strong>numpy</strong> = مكتبة الحسابات الرياضية والمصفوفات. كل عمليات الضرب والجمع على الـ arrays بتتعمل بيها. ده أسرع بكتير من Python العادي.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 7</div>
+            <div class="line-code-mini">import matplotlib.pyplot as plt</div>
+            <div class="line-meaning"><strong>matplotlib.pyplot</strong> = المكتبة اللي بنرسم بيها الجرافات (Pie Chart، Bar Chart، Scatter Plot). <code>plt</code> اختصار.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 8</div>
+            <div class="line-code-mini">import gridspec</div>
+            <div class="line-meaning"><strong>gridspec</strong> = بيخلينا نرتب الـ Subplots في شبكة (2×2 مثلاً). من غيره الرسوم بتبقى فوق بعض.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 9</div>
+            <div class="line-code-mini">import sys, random</div>
+            <div class="line-meaning"><strong>sys</strong> = بيخلينا نقرأ arguments من الـ Terminal. <strong>random</strong> = بنستخدمه في K-Means عشان نختار نقاط البداية (Centroids) بشكل عشوائي.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- detect_numeric_cols -->
+    <div class="fn-block" id="detect">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">detect_numeric_cols(df)</div>
+          <div class="fn-sub">السطور 11–15: اكتشاف الأعمدة الرقمية تلقائياً</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 11–15</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">detect_numeric_cols</span>(df):
+    cols = [c <span class="kw">for</span> c <span class="kw">in</span> df.columns
+            <span class="kw">if</span> pd.<span class="fn">to_numeric</span>(df[c], errors=<span class="str">'coerce'</span>).<span class="fn">notna</span>().<span class="fn">sum</span>() > <span class="fn">len</span>(df) * <span class="num">0.5</span>]
+    <span class="fn">print</span>(<span class="str">f"✓ أعمدة رقمية: {cols}"</span>)
+    <span class="kw">return</span> cols</pre>
+        </div>
+        <div class="explain-section">
+          <h4>🎯 الغرض من الدالة:</h4>
+          <p style="color:var(--text-dim);font-size:14px;margin-bottom:14px;">بدل ما المستخدم يقول يدوياً "الأعمدة دي هي الرقمية" — الكود بيعمل ده تلقائياً. بيفحص كل عمود ولو أكتر من 50% من قيمه أرقام — يحطه في القائمة.</p>
+          <h4>📝 شرح سطر سطر:</h4>
+          <div class="line-explain">
+            <div class="line-num">السطر</div>
+            <div class="line-code-mini">for c in df.columns</div>
+            <div class="line-meaning">بيلف على كل الأعمدة الموجودة في الـ DataFrame واحد واحد.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">الشرط</div>
+            <div class="line-code-mini">pd.to_numeric(..., errors='coerce')</div>
+            <div class="line-meaning">بيحاول يحول قيم العمود لأرقام. لو قيمة مش رقم — بيحطها <code>NaN</code> بدل ما يتعطل. <code>errors='coerce'</code> = لو مش رقم، حولها لـ NaN بدل ما يطلع خطأ.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">الشرط</div>
+            <div class="line-code-mini">.notna().sum() > len(df)*0.5</div>
+            <div class="line-meaning">بيحسب كام قيمة مش NaN (يعني رقم حقيقي). لو أكتر من 50% من الصفوف أرقام — العمود ده "رقمي".</div>
+          </div>
+        </div>
+        <div class="info-box box-amber">
+          <div class="ib-icon">🤔</div>
+          <div class="ib-text"><strong>ليه 50%؟</strong> لأن ممكن يكون في عمود فيه بعض الأرقام وبعض نصوص. لو اشترطنا 100% هنشيل أعمدة مفيدة. 50% بيوازن بين الدقة والمرونة.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- prepare_data -->
+    <div class="fn-block" id="prepare">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">prepare_data(df, features, target)</div>
+          <div class="fn-sub">السطور 18–22: تنظيف الداتا واستخراج X و y</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 18–22</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">prepare_data</span>(df, features, target):
+    sub = df[features + [target]].<span class="fn">apply</span>(pd.to_numeric, errors=<span class="str">'coerce'</span>).<span class="fn">dropna</span>()
+    <span class="fn">print</span>(<span class="str">f"✓ صفوف صالحة: {len(sub)}"</span>)
+    <span class="kw">return</span> sub[features].values, sub[target].values, sub</pre>
+        </div>
+        <div class="explain-section">
+          <h4>📝 شرح تفصيلي:</h4>
+          <div class="line-explain">
+            <div class="line-num">السطر 2</div>
+            <div class="line-code-mini">df[features + [target]]</div>
+            <div class="line-meaning">بياخد بس الأعمدة اللي احنا محتاجينها (Features + Target) ويتجاهل الباقي.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">السطر 2</div>
+            <div class="line-code-mini">.apply(pd.to_numeric)</div>
+            <div class="line-meaning">بيحول كل الأعمدة لأرقام. لو في نص — بيتحول لـ NaN.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">السطر 2</div>
+            <div class="line-code-mini">.dropna()</div>
+            <div class="line-meaning">بيشيل كل الصفوف اللي فيها NaN (أي قيمة فاضية). عشان الموديل مش قادر يتعامل مع قيم فاضية.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">return</div>
+            <div class="line-code-mini">sub[features].values</div>
+            <div class="line-meaning">بيرجع المصفوفة <strong>X</strong> — الـ Features بس (مصفوفة رقمية numpy بدل DataFrame). <code>.values</code> بيحول من pandas لـ numpy array.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">return</div>
+            <div class="line-code-mini">sub[target].values</div>
+            <div class="line-meaning">بيرجع المصفوفة <strong>y</strong> — الـ Target فقط (القيم اللي هنتنبأ بيها).</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">return</div>
+            <div class="line-code-mini">sub</div>
+            <div class="line-meaning">بيرجع الـ DataFrame المنظف كمان عشان نقدر نعرضه في الجدول بعدين.</div>
+          </div>
+        </div>
+        <div class="info-box box-green">
+          <div class="ib-icon">✅</div>
+          <div class="ib-text"><strong>ليه بنرجع 3 حاجات؟</strong> X و y محتاجينهم للتدريب. sub محتاجينه عشان نعرض النتائج في جدول جنب بيانات المستخدم الأصلية.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- normalise -->
+    <div class="fn-block" id="normalise">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">normalise(X)</div>
+          <div class="fn-sub">السطور 25–28: تطبيع Z-Score</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 25–28</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">normalise</span>(X):
+    means, stds = X.<span class="fn">mean</span>(<span class="num">0</span>), X.<span class="fn">std</span>(<span class="num">0</span>)
+    stds[stds == <span class="num">0</span>] = <span class="num">1</span>
+    <span class="kw">return</span> (X - means) / stds</pre>
+        </div>
+        <div class="formula-box">Z = (X − μ) / σ &nbsp;&nbsp;&nbsp; μ = المتوسط &nbsp;&nbsp;&nbsp; σ = الانحراف المعياري</div>
+        <div class="explain-section">
+          <h4>📝 شرح سطر سطر:</h4>
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">X.mean(0)</div>
+            <div class="line-meaning">بيحسب متوسط كل عمود. الـ <code>0</code> يعني على طول المحور الرأسي (column-wise). يعني لو عندك Revenue: بيحسب متوسط كل قيم الـ Revenue.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">X.std(0)</div>
+            <div class="line-meaning">بيحسب الانحراف المعياري لكل عمود — مقياس كام القيم بتختلف عن المتوسط.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">stds[stds == 0] = 1</div>
+            <div class="line-meaning"><strong>أهم سطر!</strong> لو عمود عنده std = 0 (يعني كل قيمه نفس الرقم) — هيتعمل قسمة على صفر وينفجر البرنامج. عشان كده لو std = 0 بنحوله لـ 1 (اليوم يعني مفيش تغيير في الـ scaling).</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 4</div>
+            <div class="line-code-mini">(X - means) / stds</div>
+            <div class="line-meaning">التطبيع الفعلي — كل قيمة بنطرح منها متوسط العمود وبنقسم على الانحراف المعياري. النتيجة: معظم القيم بتكون بين −3 و +3.</div>
+          </div>
+        </div>
+        <div class="info-box box-purple">
+          <div class="ib-icon">🎯</div>
+          <div class="ib-text"><strong>ليه Z-Score وليس Min-Max؟</strong> Z-Score أحسن لما في Outliers (قيم شاذة كبيرة). Min-Max بيتأثر بالـ Outliers — لو عندك revenue = 1,000,000 هيضغط كل القيم التانية للصفر تقريباً. Z-Score أكثر استقراراً.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- svm_train -->
+    <div class="fn-block" id="svm-train">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">svm_train(X, y, lr=0.01, reg=0.01, iters=300)</div>
+          <div class="fn-sub">السطور 31–40: تدريب الـ SVM من الصفر بـ SGD</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 31–40 (قلب المشروع)</span>
+          </div>
+          <pre><span class="cm"># score = w·x + b ؛ لو y*score &lt; 1 → حدّث بالكامل، غير كده → regularisation فقط</span>
+<span class="kw">def</span> <span class="fn">svm_train</span>(X, y, lr=<span class="num">0.01</span>, reg=<span class="num">0.01</span>, iters=<span class="num">300</span>):
+    w, b = np.<span class="fn">zeros</span>(X.shape[<span class="num">1</span>]), <span class="num">0.0</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(iters):
+        <span class="kw">for</span> xi, yi <span class="kw">in</span> <span class="fn">zip</span>(X, y):
+            <span class="kw">if</span> yi * (np.<span class="fn">dot</span>(w, xi) + b) &lt; <span class="num">1</span>:
+                w += lr * (yi * xi - <span class="num">2</span>*reg*w)
+                b += lr * yi
+            <span class="kw">else</span>:
+                w -= lr * <span class="num">2</span>*reg*w
+    <span class="kw">return</span> w, b</pre>
+        </div>
+
+        <div class="info-box box-red" style="margin-bottom:14px;">
+          <div class="ib-icon">🔥</div>
+          <div class="ib-text"><strong>ده قلب المشروع!</strong> الـ SVM بيتعلم هنا. اللي بيحصل: الموديل بياخد كل نقطة، بيحسب إذا كانت مصنفة صح، لو لأ بيصحح نفسه.</div>
+        </div>
+
+        <div class="explain-section">
+          <h4>📝 شرح كل parameter:</h4>
+          <div class="line-explain">
+            <div class="line-num">lr=0.01</div>
+            <div class="line-code-mini">Learning Rate</div>
+            <div class="line-meaning"><strong>معدل التعلم</strong> — بيحدد خطوة التصحيح كام كبيرة. كبير جداً = هيتخطى الحل. صغير جداً = هياخد وقت طويل. 0.01 قيمة ثابتة محترمة.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">reg=0.01</div>
+            <div class="line-code-mini">Regularization (λ)</div>
+            <div class="line-meaning"><strong>معامل التنظيم</strong> — بيمنع الـ Overfitting. بيعاقب الـ weights الكبيرة جداً عشان الموديل متحفظش الداتا بس يتعلم منها.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">iters=300</div>
+            <div class="line-code-mini">Iterations</div>
+            <div class="line-meaning"><strong>عدد مرات التدريب</strong> — الموديل هيلف على كل الداتا 300 مرة. كل مرة بيتعلم أكتر. 300 قيمة معقولة.</div>
+          </div>
+        </div>
+
+        <div class="explain-section">
+          <h4>📝 شرح الكود خطوة خطوة:</h4>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">w = np.zeros(...)</div>
+            <div class="line-meaning">ابدأ بـ Weights كلها أصفار. عدد الـ Weights = عدد الـ Features. <code>X.shape[1]</code> = عدد الأعمدة.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">b = 0.0</div>
+            <div class="line-meaning"><strong>Bias</strong> — ده قيمة إضافية بيضيفها الموديل في المعادلة. بيبدأ بصفر.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 4</div>
+            <div class="line-code-mini">for _ in range(iters)</div>
+            <div class="line-meaning">لف 300 مرة على كل الداتا. الـ <code>_</code> بدل <code>i</code> لأننا مش محتاجين الرقم — بس عايزين نلف.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">for xi, yi in zip(X, y)</div>
+            <div class="line-meaning">لكل نقطة في الداتا: <code>xi</code> = الـ Features (صف واحد). <code>yi</code> = الـ Label (+1 أو −1).</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 6</div>
+            <div class="line-code-mini">yi * (np.dot(w,xi) + b) &lt; 1</div>
+            <div class="line-meaning"><strong>Hinge Loss Condition:</strong> <code>np.dot(w, xi)</code> = الضرب النقطي (الـ Score). لو <code>y × score &lt; 1</code> يعني النقطة دي مش مصنفة صح أو الـ Margin صغير — محتاجين نصحح.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 7</div>
+            <div class="line-code-mini">w += lr*(yi*xi - 2*reg*w)</div>
+            <div class="line-meaning"><strong>التحديث الكامل:</strong> لو غلط — صحح الـ Weight في اتجاه <code>yi × xi</code> (اتجاه الصح) وطرح <code>2×reg×w</code> (الـ Regularization عشان متكبرش). ده SGD update.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 8</div>
+            <div class="line-code-mini">b += lr * yi</div>
+            <div class="line-meaning">صحح الـ Bias كمان في نفس الاتجاه.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 10</div>
+            <div class="line-code-mini">w -= lr * 2*reg*w</div>
+            <div class="line-meaning"><strong>الـ else:</strong> لو مصنف صح — مش محتاج تصحيح كامل. بس حط Regularization عشان الـ Weights متكبرش. (Decay بس)</div>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          إذا y·(w·x + b) &lt; 1:&nbsp;&nbsp; w = w + α·(y·x − 2λ·w) &nbsp;&nbsp;&nbsp; b = b + α·y
+          <br>إذا y·(w·x + b) ≥ 1:&nbsp;&nbsp; w = w − α·2λ·w &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Regularization فقط)
+        </div>
+      </div>
+    </div>
+
+    <!-- svm_predict -->
+    <div class="fn-block" id="svm-predict">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">svm_predict(w, b, X)</div>
+          <div class="fn-sub">السطور 43–44: التنبؤ بالتصنيف</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 43–44</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">svm_predict</span>(w, b, X):
+    <span class="kw">return</span> np.<span class="fn">where</span>(X.<span class="fn">dot</span>(w) + b >= <span class="num">0</span>, <span class="num">1</span>, <span class="num">-1</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">السطر</div>
+            <div class="line-code-mini">X.dot(w) + b</div>
+            <div class="line-meaning">بيحسب <strong>الـ Score</strong> لكل نقطة. ده الضرب النقطي لكل صف في X مع الـ Weights. النتيجة رقم لكل صف.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">السطر</div>
+            <div class="line-code-mini">np.where(... >= 0, 1, -1)</div>
+            <div class="line-meaning">لو الـ Score أكبر من أو يساوي 0 → <strong>+1 (Profit)</strong>. لو أصغر من 0 → <strong>−1 (Loss)</strong>. ده بالظبط مبدأ SVM — الـ Hyperplane في الصفر.</div>
+          </div>
+        </div>
+        <div class="formula-box">
+          f(x) = w·x + b &nbsp;&nbsp;&nbsp; → &nbsp;&nbsp;&nbsp; إذا f(x) ≥ 0 → Profit (+1) &nbsp;&nbsp;&nbsp; إذا f(x) &lt; 0 → Loss (-1)
+        </div>
+      </div>
+    </div>
+
+    <!-- k_means -->
+    <div class="fn-block" id="kmeans">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">k_means(X, k, iters=100)</div>
+          <div class="fn-sub">السطور 47–54: خوارزمية K-Means من الصفر</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 47–54</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">k_means</span>(X, k, iters=<span class="num">100</span>):
+    centroids = X[random.<span class="fn">sample</span>(<span class="fn">range</span>(<span class="fn">len</span>(X)), k)].<span class="fn">copy</span>()
+    labels = np.<span class="fn">zeros</span>(<span class="fn">len</span>(X), dtype=<span class="fn">int</span>)
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(iters):
+        labels = np.<span class="fn">argmin</span>(np.<span class="fn">sum</span>((X[:, <span class="kw">None</span>] - centroids)**<span class="num">2</span>, axis=<span class="num">2</span>), axis=<span class="num">1</span>)
+        <span class="kw">for</span> ci <span class="kw">in</span> <span class="fn">range</span>(k):
+            <span class="kw">if</span> (labels == ci).<span class="fn">any</span>():
+                centroids[ci] = X[labels == ci].<span class="fn">mean</span>(<span class="num">0</span>)
+    <span class="kw">return</span> labels, centroids</pre>
+        </div>
+        <div class="explain-section">
+          <h4>📝 شرح خطوة خطوة:</h4>
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">random.sample(range(len(X)), k)</div>
+            <div class="line-meaning">اختار k صف عشوائي من الداتا كـ Centroids ابتدائية. <code>.copy()</code> عشان منغيرش الداتا الأصلية.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">labels = np.zeros(...)</div>
+            <div class="line-meaning">ابدأ بكل النقاط في Cluster 0. هيتغير في كل iteration.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">X[:, None] - centroids</div>
+            <div class="line-meaning">Broadcasting Magic! <code>X[:, None]</code> بيحول X من (n, features) لـ (n, 1, features) عشان تطرح منها centroids (k, features). النتيجة (n, k, features) — الفرق بين كل نقطة وكل Centroid.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">**2</div>
+            <div class="line-meaning">ارفع للتربيع — لأن بنحسب المسافة Euclidean المربعة (أسرع من الجذر التربيعي ونفس التأثير في المقارنة).</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">np.sum(..., axis=2)</div>
+            <div class="line-meaning">اجمع على الـ Features. النتيجة (n, k) — مسافة كل نقطة لكل Centroid.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">np.argmin(..., axis=1)</div>
+            <div class="line-meaning">لكل نقطة، خد index الـ Centroid الأقرب. ده الـ label الجديد.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 6-8</div>
+            <div class="line-code-mini">centroids[ci] = mean</div>
+            <div class="line-meaning">لكل Cluster، احسب متوسط النقاط اللي فيه وحرّك الـ Centroid للمتوسط ده. ده الـ Update Step.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 7</div>
+            <div class="line-code-mini">if (labels==ci).any()</div>
+            <div class="line-meaning">تأكد إن في نقاط في الـ Cluster قبل ما تحسب المتوسط — عشان متعملش قسمة على صفر لو Cluster فاضي.</div>
+          </div>
+        </div>
+        <div class="formula-box">
+          Label(x) = argmin_c ||x − centroid_c||²&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; centroid_c = mean(x : label(x) = c)
+        </div>
+      </div>
+    </div>
+
+    <!-- evaluate -->
+    <div class="fn-block" id="evaluate">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">evaluate(preds, y)</div>
+          <div class="fn-sub">السطور 57–64: حساب مقاييس الأداء</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 57–64</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">evaluate</span>(preds, y):
+    tp = ((preds==<span class="num">1</span>) & (y==<span class="num">1</span>)).<span class="fn">sum</span>()
+    fp = ((preds==<span class="num">1</span>) & (y==<span class="num">-1</span>)).<span class="fn">sum</span>()
+    fn = ((preds==<span class="num">-1</span>) & (y==<span class="num">1</span>)).<span class="fn">sum</span>()
+    acc  = (preds == y).<span class="fn">mean</span>()
+    prec = tp/(tp+fp) <span class="kw">if</span> tp+fp <span class="kw">else</span> <span class="num">0</span>
+    rec  = tp/(tp+fn) <span class="kw">if</span> tp+fn <span class="kw">else</span> <span class="num">0</span>
+    f1   = <span class="num">2</span>*prec*rec/(prec+rec) <span class="kw">if</span> prec+rec <span class="kw">else</span> <span class="num">0</span>
+    <span class="kw">return</span> acc, prec, rec, f1</pre>
+        </div>
+        <div class="explain-section">
+          <h4>📝 شرح المقاييس الأربعة:</h4>
+          <div class="line-explain">
+            <div class="line-num">TP</div>
+            <div class="line-code-mini">preds==1 AND y==1</div>
+            <div class="line-meaning"><strong>True Positive:</strong> الموديل قال Profit والحقيقة Profit ✅ — صح في الإيجابي.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">FP</div>
+            <div class="line-code-mini">preds==1 AND y==-1</div>
+            <div class="line-meaning"><strong>False Positive:</strong> الموديل قال Profit بس الحقيقة Loss ❌ — إنذار كاذب.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">FN</div>
+            <div class="line-code-mini">preds==-1 AND y==1</div>
+            <div class="line-meaning"><strong>False Negative:</strong> الموديل قال Loss بس الحقيقة Profit ❌ — فاتته حاجة.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Accuracy</div>
+            <div class="line-code-mini">(preds==y).mean()</div>
+            <div class="line-meaning">نسبة الصح من الكل. 0.85 = الموديل صح في 85% من الحالات.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Precision</div>
+            <div class="line-code-mini">TP / (TP + FP)</div>
+            <div class="line-meaning">من اللي قلنا عليهم Profit، كام منهم Profit فعلاً؟</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Recall</div>
+            <div class="line-code-mini">TP / (TP + FN)</div>
+            <div class="line-meaning">من كل الـ Profits الحقيقية، كام منهم اكتشفنا؟</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">F1</div>
+            <div class="line-code-mini">2·P·R / (P + R)</div>
+            <div class="line-meaning"><strong>المقياس الأشمل:</strong> المتوسط التوافقي بين Precision وRecall. أحسن من Accuracy لو الداتا مش متوازنة.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 6</div>
+            <div class="line-code-mini">if tp+fp else 0</div>
+            <div class="line-meaning">لو tp+fp = 0 معناه الموديل ما قالش Profit لحد. بدل قسمة على صفر، نرجع 0.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- plot_results -->
+    <div class="fn-block" id="plot">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-def">def</span>
+        <div class="fn-name">
+          <div class="fn-title">plot_results(...)</div>
+          <div class="fn-sub">السطور 67–106: رسم الـ Dashboard بـ 4 مخططات</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 67–106 (مختصر)</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">plot_results</span>(preds, y_test, target_test, km_labels, k,
+                 c_counts, c_means, tmean, features, w, acc, f1):
+    fig = plt.<span class="fn">figure</span>(figsize=(<span class="num">12</span>, <span class="num">8</span>))
+    gs  = gridspec.<span class="fn">GridSpec</span>(<span class="num">2</span>, <span class="num">2</span>, figure=fig, hspace=<span class="num">0.45</span>, wspace=<span class="num">0.35</span>)
+
+    <span class="cm"># مخطط 1: Donut Chart — Profit vs Loss</span>
+    ax1 = fig.<span class="fn">add_subplot</span>(gs[<span class="num">0</span>, <span class="num">0</span>])
+    n_profit = (preds == <span class="num">1</span>).<span class="fn">sum</span>()
+    ax1.<span class="fn">pie</span>([n_profit, <span class="fn">len</span>(preds)-n_profit], labels=[<span class="str">'Profit'</span>,<span class="str">'Loss'</span>],
+            colors=[<span class="str">'#1D9E75'</span>,<span class="str">'#E24B4A'</span>], autopct=<span class="str">'%1.1f%%'</span>,
+            wedgeprops=<span class="fn">dict</span>(width=<span class="num">0.5</span>))    <span class="cm"># width=0.5 → Donut</span>
+
+    <span class="cm"># مخطط 2: K-Means Bars</span>
+    ax2 = fig.<span class="fn">add_subplot</span>(gs[<span class="num">0</span>, <span class="num">1</span>])
+    colors = [<span class="str">'#378ADD'</span>,<span class="str">'#EF9F27'</span>,<span class="str">'#D4537E'</span>,...][:k]
+    bars = ax2.<span class="fn">bar</span>([<span class="str">f'C{i+1}'</span> <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(k)], c_counts, color=colors)
+
+    <span class="cm"># مخطط 3: Feature Importance</span>
+    ax3 = fig.<span class="fn">add_subplot</span>(gs[<span class="num">1</span>, <span class="num">0</span>])
+    imp = np.<span class="fn">abs</span>(w) / (np.<span class="fn">abs</span>(w).<span class="fn">max</span>() <span class="kw">or</span> <span class="num">1</span>)
+
+    <span class="cm"># مخطط 4: Actual vs Predicted</span>
+    ax4 = fig.<span class="fn">add_subplot</span>(gs[<span class="num">1</span>, <span class="num">1</span>])
+
+    plt.<span class="fn">savefig</span>(<span class="str">'dashboard.png'</span>, dpi=<span class="num">150</span>, bbox_inches=<span class="str">'tight'</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <h4>📝 شرح كل مخطط:</h4>
+          <div class="line-explain">
+            <div class="line-num">gs[0,0]</div>
+            <div class="line-code-mini">Donut Chart</div>
+            <div class="line-meaning"><strong>Profit vs Loss:</strong> بيعرض نسبة Profit ونسبة Loss. <code>wedgeprops=dict(width=0.5)</code> بيخلي الـ Pie Chart شكل Donut (حلقة) بدل دايرة كاملة.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">gs[0,1]</div>
+            <div class="line-code-mini">K-Means Bars</div>
+            <div class="line-meaning"><strong>توزيع الـ Clusters:</strong> bar chart بيوضح عدد النقاط في كل Cluster ومتوسط قيمة الـ Target فيه.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">gs[1,0]</div>
+            <div class="line-code-mini">Feature Importance</div>
+            <div class="line-meaning"><strong>أهمية كل Feature:</strong> بياخد القيمة المطلقة لكل Weight ويطبّعها. الـ Weight الأكبر = Feature أهم. <code>np.abs(w)</code> لأن السالب والموجب مهمين بنفس القدر.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">gs[1,1]</div>
+            <div class="line-code-mini">Actual vs Predicted</div>
+            <div class="line-meaning"><strong>القيم الحقيقية vs المتنبأ بيها:</strong> الخط المتقطع = الحالة المثالية (التنبؤ = الحقيقة). كل ما النقاط قرّبت من الخط، الموديل أحسن.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">السطر</div>
+            <div class="line-code-mini">plt.savefig(..., dpi=150)</div>
+            <div class="line-meaning">بيحفظ الصورة. <code>dpi=150</code> = جودة عالية. <code>bbox_inches='tight'</code> = ميقطعش أي جزء من الصورة.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- main -->
+    <div class="fn-block" id="main">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-main">main()</span>
+        <div class="fn-name">
+          <div class="fn-title">def main() + if __name__ == "__main__"</div>
+          <div class="fn-sub">السطور 109–142: نقطة تشغيل البرنامج</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">profit_dashboard.py — lines 109–142</span>
+          </div>
+          <pre><span class="kw">def</span> <span class="fn">main</span>():
+    path = sys.argv[<span class="num">1</span>] <span class="kw">if</span> <span class="fn">len</span>(sys.argv) > <span class="num">1</span> <span class="kw">else</span> <span class="str">"data.csv"</span>
+    <span class="kw">try</span>:
+        df = <span class="fn">load_csv</span>(path)
+    <span class="kw">except</span> FileNotFoundError:
+        <span class="fn">print</span>(<span class="str">f"⚠ مش لاقي الملف: {path}"</span>); <span class="kw">return</span>
+
+    cols = <span class="fn">detect_numeric_cols</span>(df)
+    features, target = cols[:-<span class="num">1</span>], cols[-<span class="num">1</span>]
+
+    X, y, sub = <span class="fn">prepare_data</span>(df, features, target)
+    X_norm     = <span class="fn">normalise</span>(X)
+
+    <span class="cm"># Labels: فوق المتوسط = Profit (+1)، تحت = Loss (-1)</span>
+    tmean = y.<span class="fn">mean</span>()
+    y_svm = np.<span class="fn">where</span>(y >= tmean, <span class="num">1</span>, <span class="num">-1</span>)
+
+    <span class="cm"># تقسيم 80/20</span>
+    idx = <span class="fn">list</span>(<span class="fn">range</span>(<span class="fn">len</span>(X_norm))); random.<span class="fn">shuffle</span>(idx)
+    n_tr = <span class="fn">int</span>(<span class="fn">len</span>(idx)*<span class="num">0.8</span>)
+    tr, te = idx[:n_tr], idx[n_tr:]
+
+    w, b = <span class="fn">svm_train</span>(X_norm[tr], y_svm[tr])
+    preds = <span class="fn">svm_predict</span>(w, b, X_norm[te])
+    acc, prec, rec, f1 = <span class="fn">evaluate</span>(preds, y_svm[te])
+
+    km_labels, _ = <span class="fn">k_means</span>(X_norm, k=<span class="num">3</span>)
+
+    <span class="fn">plot_results</span>(...)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="fn">main</span>()</pre>
+        </div>
+        <div class="explain-section">
+          <h4>📝 شرح النقاط المهمة:</h4>
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">sys.argv[1]</div>
+            <div class="line-meaning">بياخد اسم الملف من الـ Terminal. لو كتبت <code>python profit_dashboard.py mydata.csv</code> → <code>sys.argv[1] = "mydata.csv"</code>. لو ما كتبتش، بيستخدم <code>"data.csv"</code> كـ default.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 9</div>
+            <div class="line-code-mini">cols[:-1], cols[-1]</div>
+            <div class="line-meaning">بياخد كل الأعمدة ماعدا الأخير كـ Features، والأخير كـ Target. ذكي! <code>[:-1]</code> = كل حاجة ما عدا الأخير.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 14</div>
+            <div class="line-code-mini">y_svm = np.where(y>=tmean, 1, -1)</div>
+            <div class="line-meaning"><strong>تحويل Profit لـ Labels:</strong> مش عندنا labels جاهزة. عشان كده بنقول: لو الـ Profit فوق المتوسط → Profit (+1)، لو تحت → Loss (−1). ذكي!</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 17-20</div>
+            <div class="line-code-mini">random.shuffle(idx)</div>
+            <div class="line-meaning"><strong>Train/Test Split يدوي:</strong> بدل sklearn. بنخلق list من الـ indices، بنخلطهم عشوائي، وبناخد أول 80% للتدريب والباقي للاختبار.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">السطر</div>
+            <div class="line-code-mini">km_labels, _ = k_means(...)</div>
+            <div class="line-meaning">الـ <code>_</code> يعني مش محتاجين الـ Centroids بعد التدريب — بس عايزين الـ Labels. <code>_</code> convention في Python عشان تقول "مش مهمة".</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">آخر سطرين</div>
+            <div class="line-code-mini">if __name__ == "__main__"</div>
+            <div class="line-meaning">ده Python convention مهم. بيقول: شغّل الـ <code>main()</code> بس لو الملف اتشغّل مباشرة — مش لو اتعمله import من ملف تاني. بيخلي الكود modular وقابل لإعادة الاستخدام.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── FILE 2: app.py (Streamlit) ─── -->
+<div class="file-block" id="streamlit">
+  <div class="file-header">
+    <div class="file-icon st-icon">🌐</div>
+    <div class="file-title">
+      <h2>app.py — النسخة Streamlit</h2>
+      <p>نفس المنطق بس بواجهة ويب تفاعلية — الفرق في الـ UI Layer</p>
+    </div>
+  </div>
+  <div class="file-body">
+
+    <div class="info-box box-green" style="margin-bottom:20px;">
+      <div class="ib-icon">✅</div>
+      <div class="ib-text">الدوال <strong>profit_dashboard.py</strong> شرحناها بالكامل فوق وهي نفسها في app.py. الجزء الجديد هنا هو كود الـ Streamlit UI فقط.</div>
+    </div>
+
+    <!-- Page Config -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-config">config</span>
+        <div class="fn-name">
+          <div class="fn-title">st.set_page_config() + إعداد الصفحة</div>
+          <div class="fn-sub">السطور 12–15: إعداد الصفحة</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 12–15</span>
+          </div>
+          <pre>st.<span class="fn">set_page_config</span>(page_title=<span class="str">"Profit Prediction"</span>, page_icon=<span class="str">"📊"</span>, layout=<span class="str">"wide"</span>)
+st.<span class="fn">title</span>(<span class="str">"📊 Profit Prediction Dashboard"</span>)
+st.<span class="fn">markdown</span>(<span class="str">"**SVM + K-Means** — مبني من الصفر بدون scikit-learn"</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">سطر 1</div>
+            <div class="line-code-mini">set_page_config</div>
+            <div class="line-meaning">لازم يبقى <strong>أول سطر Streamlit في الملف</strong>. بيحدد عنوان الـ Tab في المتصفح، الأيقونة، والـ layout. <code>layout="wide"</code> = بيستخدم كل عرض الصفحة.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">st.title()</div>
+            <div class="line-meaning">بيكتب عنوان كبير في أعلى الصفحة. بيتحول لـ &lt;h1&gt; في HTML.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">st.markdown()</div>
+            <div class="line-meaning">بيكتب نص بيدعم Markdown. النجمتين <code>**...**</code> بتعمل Bold.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Upload -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-ui">UI</span>
+        <div class="fn-name">
+          <div class="fn-title">st.file_uploader() — رفع الملف</div>
+          <div class="fn-sub">السطور 65–75: واجهة رفع الـ CSV</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 65–75</span>
+          </div>
+          <pre>uploaded = st.<span class="fn">file_uploader</span>(<span class="str">"📂 ارفع ملف CSV"</span>, type=[<span class="str">"csv"</span>])
+
+<span class="kw">if</span> uploaded <span class="kw">is</span> <span class="kw">None</span>:
+    st.<span class="fn">info</span>(<span class="str">"👆 ارفع ملف CSV عشان يبدأ التحليل"</span>)
+    st.<span class="fn">stop</span>()
+
+df = pd.<span class="fn">read_csv</span>(uploaded)
+st.<span class="fn">success</span>(<span class="str">f"✓ تم تحميل **{len(df)}** صف و **{len(df.columns)}** عمود"</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">سطر 1</div>
+            <div class="line-code-mini">st.file_uploader(...)</div>
+            <div class="line-meaning">بيعرض زرار رفع ملف. <code>type=["csv"]</code> بيسمح بس بملفات CSV. لو ما رفعتش ملف، <code>uploaded = None</code>.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3-5</div>
+            <div class="line-code-mini">if uploaded is None: st.stop()</div>
+            <div class="line-meaning"><strong>Guard Clause:</strong> لو مفيش ملف — اعرض رسالة وقف. <code>st.stop()</code> بيوقف تنفيذ باقي الكود. بيمنع الأخطاء لو الـ User ما رفعش ملف.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 7</div>
+            <div class="line-code-mini">pd.read_csv(uploaded)</div>
+            <div class="line-meaning">Streamlit بيدي الملف كـ file-like object مباشرة لـ pandas. مش محتاج تحفظه على الـ disk.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 8</div>
+            <div class="line-code-mini">st.success(...)</div>
+            <div class="line-meaning">بيعرض رسالة خضراء بتأكيد التحميل.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-ui">UI</span>
+        <div class="fn-name">
+          <div class="fn-title">st.sidebar — الشريط الجانبي للإعدادات</div>
+          <div class="fn-sub">السطور 82–100: multiselect, selectbox, slider, button</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 82–100</span>
+          </div>
+          <pre>st.sidebar.<span class="fn">header</span>(<span class="str">"⚙ الإعدادات"</span>)
+
+features = st.sidebar.<span class="fn">multiselect</span>(
+    <span class="str">"اختار الـ Features"</span>,
+    options=cols,
+    default=cols[:-<span class="num">1</span>]
+)
+target = st.sidebar.<span class="fn">selectbox</span>(
+    <span class="str">"اختار الـ Target"</span>,
+    options=cols,
+    index=<span class="fn">len</span>(cols)-<span class="num">1</span>
+)
+k        = st.sidebar.<span class="fn">slider</span>(<span class="str">"عدد مجموعات K-Means"</span>, <span class="num">2</span>, <span class="num">6</span>, <span class="num">3</span>)
+split    = st.sidebar.<span class="fn">slider</span>(<span class="str">"نسبة التدريب %"</span>, <span class="num">60</span>, <span class="num">90</span>, <span class="num">80</span>) / <span class="num">100</span>
+run_btn  = st.sidebar.<span class="fn">button</span>(<span class="str">"🚀 ابدأ التحليل"</span>, use_container_width=<span class="kw">True</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">sidebar</div>
+            <div class="line-code-mini">st.sidebar.*</div>
+            <div class="line-meaning">كل حاجة بنكتبها على <code>st.sidebar.</code> بتتعرض في الـ Panel الجانبي الأيسر — مش في المنطقة الرئيسية.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Widget 1</div>
+            <div class="line-code-mini">multiselect(...)</div>
+            <div class="line-meaning">بيعرض قائمة تتقدر تختار منها أكتر من حاجة. المستخدم بيختار الـ Features اللي عايزها. <code>default=cols[:-1]</code> = بيحدد الاختيار الافتراضي.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Widget 2</div>
+            <div class="line-code-mini">selectbox(...)</div>
+            <div class="line-meaning">قائمة منسدلة — بيختار منها حاجة واحدة بس. <code>index=len(cols)-1</code> = بيختار الأخير كـ default (في الغالب هو الـ Target).</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Widget 3</div>
+            <div class="line-code-mini">slider("K-Means", 2, 6, 3)</div>
+            <div class="line-meaning">Slider من 2 لـ 6، الـ default 3. المستخدم يقدر يغير عدد الـ Clusters.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Widget 4</div>
+            <div class="line-code-mini">slider("نسبة التدريب", 60, 90, 80) / 100</div>
+            <div class="line-meaning">Slider للـ Split ratio. القسمة على 100 عشان نحوله من نسبة مئوية لـ decimal (80 → 0.8).</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">Widget 5</div>
+            <div class="line-code-mini">button("ابدأ التحليل")</div>
+            <div class="line-meaning">زرار. لو ضغط عليه → <code>run_btn = True</code>. لو لأ → <code>False</code>. البرنامج مش بيشتغل لحد ما يضغط.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Running Models -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-main">run</span>
+        <div class="fn-name">
+          <div class="fn-title">with st.spinner() — تشغيل الموديلات</div>
+          <div class="fn-sub">السطور 107–127: التحليل الفعلي بعد ضغط الزرار</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 107–127</span>
+          </div>
+          <pre><span class="kw">with</span> st.<span class="fn">spinner</span>(<span class="str">"⚙ جاري التحليل..."</span>):
+
+    X, y, sub = <span class="fn">prepare_data</span>(df, features, target)
+    X_norm    = <span class="fn">normalise</span>(X)
+    tmean     = y.<span class="fn">mean</span>()
+    y_svm     = np.<span class="fn">where</span>(y >= tmean, <span class="num">1</span>, <span class="num">-1</span>)
+
+    idx = <span class="fn">list</span>(<span class="fn">range</span>(<span class="fn">len</span>(X_norm))); random.<span class="fn">shuffle</span>(idx)
+    n_tr = <span class="fn">int</span>(<span class="fn">len</span>(idx)*split)       <span class="cm"># split من الـ slider</span>
+    tr, te = idx[:n_tr], idx[n_tr:]
+
+    w, b  = <span class="fn">svm_train</span>(X_norm[tr], y_svm[tr])
+    preds = <span class="fn">svm_predict</span>(w, b, X_norm[te])
+    acc, prec, rec, f1 = <span class="fn">evaluate</span>(preds, y_svm[te])
+
+    km_labels, _ = <span class="fn">k_means</span>(X_norm, k)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">السطر 1</div>
+            <div class="line-code-mini">with st.spinner(...)</div>
+            <div class="line-meaning"><strong>Context Manager:</strong> بيعرض دايرة دوران (Loading) طول ما الكود جوا الـ <code>with</code> شغال. لما خلص — بتختفي. UX جميل!</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">ملاحظة</div>
+            <div class="line-code-mini">k من slider</div>
+            <div class="line-meaning">لاحظ إن <code>k</code> هنا بيجي من الـ Slider اللي المستخدم اختاره — مش hardcoded 3 زي profit_dashboard.py. ده flexibility.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">ملاحظة</div>
+            <div class="line-code-mini">split من slider</div>
+            <div class="line-meaning">نفس الكلام — نسبة التدريب بيجيها المستخدم من الـ Slider.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Display -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-ui">UI</span>
+        <div class="fn-name">
+          <div class="fn-title">st.columns() + st.metric() — عرض النتائج</div>
+          <div class="fn-sub">السطور 130–137: عرض Accuracy, Precision, Recall, F1</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 130–137</span>
+          </div>
+          <pre>st.<span class="fn">subheader</span>(<span class="str">"📊 نتائج الـ SVM"</span>)
+m1, m2, m3, m4 = st.<span class="fn">columns</span>(<span class="num">4</span>)
+m1.<span class="fn">metric</span>(<span class="str">"Accuracy"</span>,  <span class="str">f"{acc*100:.1f}%"</span>)
+m2.<span class="fn">metric</span>(<span class="str">"Precision"</span>, <span class="str">f"{prec:.3f}"</span>)
+m3.<span class="fn">metric</span>(<span class="str">"Recall"</span>,    <span class="str">f"{rec:.3f}"</span>)
+m4.<span class="fn">metric</span>(<span class="str">"F1 Score"</span>,  <span class="str">f"{f1:.3f}"</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">st.columns(4)</div>
+            <div class="line-meaning">بيقسم الصفحة لـ 4 أعمدة متساوية. كل عمود اسمه m1, m2, m3, m4. بنعرض على كل عمود بـ <code>m1.metric()</code>.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">m1.metric(...)</div>
+            <div class="line-meaning">بيعرض بطاقة جميلة فيها عنوان وقيمة. Streamlit بيعملها تلقائياً بتصميم احترافي. <code>f"{acc*100:.1f}%"</code> = بيحول الـ decimal لـ نسبة مئوية بـ decimal واحد.</div>
+          </div>
+        </div>
+        <div class="info-box box-amber">
+          <div class="ib-icon">🎨</div>
+          <div class="ib-text"><strong>جمال Streamlit:</strong> 6 سطور بس بتعمل 4 بطاقات metrics منظمة جنب بعض بتصميم احترافي. في عادي كنت محتاج CSS وHTML كتير!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts in Streamlit -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-ui">UI</span>
+        <div class="fn-name">
+          <div class="fn-title">st.pyplot() — عرض الرسوم البيانية</div>
+          <div class="fn-sub">السطور 140–195: نفس الـ 4 مخططات بس في المتصفح</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 140–195 (مختصر)</span>
+          </div>
+          <pre>fig = plt.<span class="fn">figure</span>(figsize=(<span class="num">13</span>, <span class="num">8</span>))
+gs  = gridspec.<span class="fn">GridSpec</span>(<span class="num">2</span>, <span class="num">2</span>, ...)
+
+<span class="cm"># ... نفس الكود تماماً زي profit_dashboard.py ...</span>
+
+st.<span class="fn">pyplot</span>(fig)   <span class="cm"># ← الفرق الوحيد!</span></pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">الفرق</div>
+            <div class="line-code-mini">st.pyplot(fig) vs plt.savefig()</div>
+            <div class="line-meaning">في profit_dashboard.py: بنحفظ الصورة على الـ disk بـ <code>plt.savefig()</code>. في app.py: بنعرضها في المتصفح مباشرة بـ <code>st.pyplot(fig)</code>. ده الفرق الوحيد!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="fn-block">
+      <div class="fn-header" onclick="toggle(this)">
+        <span class="fn-badge badge-ui">UI</span>
+        <div class="fn-name">
+          <div class="fn-title">st.dataframe() — جدول التنبؤات</div>
+          <div class="fn-sub">السطور 198–205: عرض النتائج كجدول تفاعلي</div>
+        </div>
+        <div class="fn-toggle">▼</div>
+      </div>
+      <div class="fn-body open">
+        <div class="code-block">
+          <div class="code-top">
+            <div class="code-dot dot-r"></div><div class="code-dot dot-y"></div><div class="code-dot dot-g"></div>
+            <span class="code-filename">app.py — lines 198–205</span>
+          </div>
+          <pre>st.<span class="fn">subheader</span>(<span class="str">"🗂 عينة من التنبؤات (أول 20 صف)"</span>)
+result_df = sub.iloc[te[:<span class="num">20</span>]].<span class="fn">copy</span>().<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)
+result_df[<span class="str">'SVM_Pred'</span>] = [<span class="str">'✅ Profit'</span> <span class="kw">if</span> p==<span class="num">1</span> <span class="kw">else</span> <span class="str">'❌ Loss'</span> <span class="kw">for</span> p <span class="kw">in</span> preds[:<span class="num">20</span>]]
+result_df[<span class="str">'Cluster'</span>]  = [<span class="str">f'C{km_labels[i]+1}'</span> <span class="kw">for</span> i <span class="kw">in</span> te[:<span class="num">20</span>]]
+st.<span class="fn">dataframe</span>(result_df, use_container_width=<span class="kw">True</span>)
+st.<span class="fn">success</span>(<span class="str">"✅ اكتمل التحليل!"</span>)</pre>
+        </div>
+        <div class="explain-section">
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">sub.iloc[te[:20]]</div>
+            <div class="line-meaning">بياخد أول 20 صف من الـ Test Set. <code>iloc</code> = بتاخد بالـ index رقم. <code>.copy()</code> عشان مننضفش الداتا الأصلية.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 2</div>
+            <div class="line-code-mini">.reset_index(drop=True)</div>
+            <div class="line-meaning">بيرجّع الـ index من 0 بدل ما يفضل الـ indices القديمة. <code>drop=True</code> عشان ميتضيفش الـ index القديم كعمود.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 3</div>
+            <div class="line-code-mini">List Comprehension</div>
+            <div class="line-meaning">بيعمل عمود جديد SVM_Pred بيحول +1 لـ '✅ Profit' و −1 لـ '❌ Loss' — أوضح للمستخدم.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 4</div>
+            <div class="line-code-mini">km_labels[i]+1</div>
+            <div class="line-meaning">الـ Clusters بتبدأ من 0 — بنضيف 1 عشان تبقى C1, C2, C3 بدل C0, C1, C2. أوضح للمستخدم.</div>
+          </div>
+          <div class="line-explain">
+            <div class="line-num">سطر 5</div>
+            <div class="line-code-mini">st.dataframe(...)</div>
+            <div class="line-meaning">بيعرض جدول تفاعلي — المستخدم يقدر يفرز ويبحث فيه. <code>use_container_width=True</code> = يملا كل عرض الصفحة.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── FINAL SUMMARY ─── -->
+<div class="file-block">
+  <div class="file-header">
+    <div class="file-icon" style="background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);">🏆</div>
+    <div class="file-title">
+      <h2>ملخص نهائي — كل الكود في جدول</h2>
+      <p>راجع الدوال بسرعة قبل المناقشة</p>
+    </div>
+  </div>
+  <div class="file-body">
+    <table class="sum-table">
+      <thead>
+        <tr>
+          <th>الدالة</th>
+          <th>بتعمل إيه</th>
+          <th>المدخلات</th>
+          <th>المخرجات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mtag mt-blue">detect_numeric_cols</span></td>
+          <td>بتكتشف الأعمدة الرقمية تلقائياً</td>
+          <td>df (DataFrame)</td>
+          <td>list من أسماء الأعمدة</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-blue">prepare_data</span></td>
+          <td>بتنظف الداتا وتستخرج X, y</td>
+          <td>df, features, target</td>
+          <td>X array, y array, sub DataFrame</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-blue">normalise</span></td>
+          <td>Z-Score Normalization</td>
+          <td>X (array)</td>
+          <td>X مطبّعة (قيم حول الصفر)</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-red">svm_train</span></td>
+          <td>تدريب SVM بـ SGD من الصفر</td>
+          <td>X, y, lr, reg, iters</td>
+          <td>w (Weights), b (Bias)</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-red">svm_predict</span></td>
+          <td>تصنيف نقاط جديدة</td>
+          <td>w, b, X</td>
+          <td>array من +1 و −1</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-amber">k_means</span></td>
+          <td>تجميع K-Means من الصفر</td>
+          <td>X, k, iters</td>
+          <td>labels, centroids</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-green">evaluate</span></td>
+          <td>حساب Accuracy/Precision/Recall/F1</td>
+          <td>preds, y</td>
+          <td>acc, prec, rec, f1</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-blue">plot_results</span></td>
+          <td>رسم 4 مخططات Dashboard</td>
+          <td>كل النتائج</td>
+          <td>صورة PNG / عرض في Streamlit</td>
+        </tr>
+        <tr>
+          <td><span class="mtag mt-green">main</span></td>
+          <td>يربط كل الدوال مع بعض</td>
+          <td>ملف CSV</td>
+          <td>Dashboard كامل</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box box-blue" style="margin-top:20px;">
+      <div class="ib-icon">💬</div>
+      <div class="ib-text">
+        <strong>جملة تقولها للدكتور عن الكود:</strong><br>
+        <em>"الكود مقسّم لدوال صغيرة كل واحدة عندها مسؤولية واحدة — Single Responsibility Principle. ده بيخلي الكود سهل الفهم والتعديل. لو عايز أضيف موديل جديد، بضيف دالة واحدة وأضيفها في main بس."</em>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<footer>
+  <strong>Ahmed Gamal Farag Saleh</strong> · ahmedgamalsaleh80@gmail.com<br>
+  <span style="font-size:11px;opacity:0.5;display:block;margin-top:5px;">شرح الكود — Profit Prediction System · From Scratch ML Models</span>
+</footer>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.fn-toggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (arrow) arrow.classList.toggle('open', !isOpen);
+}
+</script>
+
+</body>
+</html>
