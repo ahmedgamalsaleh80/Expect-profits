@@ -17,6 +17,7 @@ st.set_page_config(page_title="Profit Dashboard", layout="centered")
 st.title("📊 Profit Analytics Dashboard (From Scratch ML)")
 st.write("Upload your company dataset to analyze profit patterns")
 
+
 # ─────────────────────────────
 # UPLOAD DATA
 # ─────────────────────────────
@@ -26,41 +27,65 @@ if file:
 
     df = pd.read_csv(file)
 
+    # تنظيف أسماء الأعمدة
+    df.columns = df.columns.str.strip()
+
     st.subheader("📄 Data Preview")
     st.dataframe(df.head())
 
+
     # ─────────────────────────────
-    # VALIDATION
+    # AUTO COLUMN DETECTION
     # ─────────────────────────────
-    required_cols = [
-        "Revenue",
-        "Expenses",
-        "Marketing_Cost",
-        "Num_Customers",
-        "Previous_Profit",
-        "Profit"
+    def find_col(options):
+        for col in options:
+            if col in df.columns:
+                return col
+        return None
+
+
+    revenue_col = find_col(["Revenue", "revenue", "Sales", "sales"])
+    expenses_col = find_col(["Expenses", "expenses", "Cost", "cost"])
+    marketing_col = find_col(["Marketing_Cost", "Marketing", "marketing_cost"])
+    customers_col = find_col(["Num_Customers", "Customers", "customers"])
+    prev_profit_col = find_col(["Previous_Profit", "Prev_Profit", "previous_profit"])
+    profit_col = find_col(["Profit", "profit", "Net_Profit"])
+
+
+    required_found = [
+        revenue_col,
+        expenses_col,
+        marketing_col,
+        customers_col,
+        prev_profit_col,
+        profit_col
     ]
 
-    if not all(col in df.columns for col in required_cols):
-        st.error("❌ CSV missing required columns")
+
+    if any(col is None for col in required_found):
+        st.error("❌ Dataset structure not compatible with required financial features")
+        st.write("Missing columns detected:")
+        st.write({
+            "Revenue": revenue_col,
+            "Expenses": expenses_col,
+            "Marketing": marketing_col,
+            "Customers": customers_col,
+            "Previous Profit": prev_profit_col,
+            "Profit": profit_col
+        })
         st.stop()
+
 
     # ─────────────────────────────
     # FEATURES & LABELS
     # ─────────────────────────────
-    X = df[[
-        "Revenue",
-        "Expenses",
-        "Marketing_Cost",
-        "Num_Customers",
-        "Previous_Profit"
-    ]].values
-
-    y = df["Profit"].values
+    X = df[[revenue_col, expenses_col, marketing_col, customers_col, prev_profit_col]].values
+    y = df[profit_col].values
     y_cls = (y > 0).astype(int)
 
+
     # ─────────────────────────────
-    # NORMALIZATION (FROM SCRATCH)
+    # NORMALIZATION
     # ─────────────────────────────
     X_min = X.min(axis=0)
     X_max = X.max(axis=0)
@@ -68,8 +93,9 @@ if file:
 
     X_scaled = (X - X_min) / X_range
 
+
     # ─────────────────────────────
-    # TRAIN MODELS (FROM SCRATCH ONLY)
+    # TRAIN MODELS
     # ─────────────────────────────
     st.subheader("🧠 Training Models...")
 
@@ -87,14 +113,16 @@ if file:
 
     st.success("✅ Models trained successfully")
 
+
     # ─────────────────────────────
-    # PREDICTIONS ON DATASET
+    # PREDICTIONS
     # ─────────────────────────────
     y_pred = reg.predict(X_scaled)
     cls_pred = svm.predict(X_scaled)
 
+
     # ─────────────────────────────
-    # KPI SECTION (CLEAN & SMALL)
+    # KPI SECTION
     # ─────────────────────────────
     col1, col2, col3, col4 = st.columns(4)
 
@@ -105,8 +133,9 @@ if file:
 
     st.divider()
 
+
     # ─────────────────────────────
-    # SMALL CHARTS
+    # CHARTS
     # ─────────────────────────────
     c1, c2 = st.columns(2)
 
@@ -128,8 +157,9 @@ if file:
         ax2.tick_params(labelsize=6)
         st.pyplot(fig2)
 
+
     # ─────────────────────────────
-    # NEW INPUT PREDICTION
+    # NEW PREDICTION
     # ─────────────────────────────
     st.divider()
     st.subheader("🔮 Predict New Month")
